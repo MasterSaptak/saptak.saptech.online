@@ -13,6 +13,9 @@ import { CurrentResearchFocus } from "@/components/current-research-focus"
 import { Footer } from "@/components/footer"
 import { SystemsAssistant } from "@/components/systems-assistant"
 import { ModeProvider, useMode } from "@/components/mode-context"
+import { CircuitBackground } from "@/components/circuit-background"
+import { ScannerBeam } from "@/components/scanner-beam"
+import { DataStream } from "@/components/data-stream"
 
 function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-green" }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -21,19 +24,16 @@ function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-g
   return (
     <div ref={ref} className="relative py-2" aria-hidden="true">
       <div
-        className={`h-px bg-gradient-to-r from-transparent ${
-          color === "neon-blue" ? "via-neon-blue/25" : "via-neon-green/25"
-        } to-transparent transition-transform duration-1000 ease-out ${
-          isInView ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
-        }`}
+        className={`h-px bg-gradient-to-r from-transparent ${color === "neon-blue" ? "via-neon-blue/25" : "via-neon-green/25"
+          } to-transparent transition-transform duration-1000 ease-out ${isInView ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0"
+          }`}
         style={{ transformOrigin: "center" }}
       />
       {/* Animated glow dot traveling the line */}
       {isInView && (
         <motion.div
-          className={`absolute top-1/2 -translate-y-1/2 w-12 h-[2px] rounded-full ${
-            color === "neon-blue" ? "bg-neon-blue/40" : "bg-neon-green/40"
-          }`}
+          className={`absolute top-1/2 -translate-y-1/2 w-12 h-[2px] rounded-full ${color === "neon-blue" ? "bg-neon-blue/40" : "bg-neon-green/40"
+            }`}
           style={{
             boxShadow: color === "neon-blue"
               ? "0 0 12px rgba(0,229,255,0.5)"
@@ -109,6 +109,18 @@ function PortfolioContent() {
 
       <Footer />
       <SystemsAssistant />
+
+      {/* Circuit board animated background */}
+      <CircuitBackground />
+
+      {/* Robotic scanner beam */}
+      <ScannerBeam />
+
+      {/* Data streams along edges */}
+      <DataStream />
+
+      {/* Hex grid tech background */}
+      <div className="hex-grid-bg" aria-hidden="true" />
 
       {/* Animated background grid overlay */}
       <div className="animated-grid-overlay" aria-hidden="true" />

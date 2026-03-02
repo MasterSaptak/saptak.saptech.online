@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Shield, TrendingUp, Activity } from "lucide-react"
+import { GlitchText, SystemStatus, TechCorners } from "./tech-animations"
 
 const pillars = [
   {
@@ -59,15 +60,17 @@ export function DesignPhilosophy() {
           transition={{ duration: 0.7 }}
           className="mb-12"
         >
+          <SystemStatus message="Loading core principles..." color="blue" />
           <span className="text-xs font-mono text-neon-blue tracking-widest uppercase mb-3 block">
             {"// Core Principles"}
           </span>
-          <h2
+          <GlitchText
+            as="h2"
             className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 ${isHeadingInView ? "heading-glow" : ""
               }`}
           >
             Systems Design Philosophy
-          </h2>
+          </GlitchText>
         </motion.div>
 
         <motion.div

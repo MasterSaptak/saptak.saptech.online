@@ -265,6 +265,40 @@ export function HeroSection() {
         aria-hidden="true"
       />
 
+      {/* HUD Reticle - top right */}
+      <div className="absolute top-20 right-8 lg:right-16 reticle pointer-events-none" aria-hidden="true">
+        <svg width="60" height="60" viewBox="0 0 60 60" className="reticle-inner" fill="none">
+          <circle cx="30" cy="30" r="28" stroke="rgba(0,229,255,0.12)" strokeWidth="0.5" strokeDasharray="4 6" />
+          <circle cx="30" cy="30" r="20" stroke="rgba(0,229,255,0.08)" strokeWidth="0.5" />
+          <line x1="30" y1="2" x2="30" y2="12" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" />
+          <line x1="30" y1="48" x2="30" y2="58" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" />
+          <line x1="2" y1="30" x2="12" y2="30" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" />
+          <line x1="48" y1="30" x2="58" y2="30" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" />
+        </svg>
+      </div>
+
+      {/* HUD Reticle - bottom left */}
+      <div className="absolute bottom-24 left-8 lg:left-16 reticle pointer-events-none" aria-hidden="true" style={{ animationDelay: "2s" }}>
+        <svg width="40" height="40" viewBox="0 0 40 40" className="reticle-inner" fill="none" style={{ animationDirection: "normal" }}>
+          <rect x="2" y="2" width="36" height="36" stroke="rgba(57,255,20,0.1)" strokeWidth="0.5" strokeDasharray="3 5" />
+          <line x1="20" y1="2" x2="20" y2="10" stroke="rgba(57,255,20,0.12)" strokeWidth="0.5" />
+          <line x1="20" y1="30" x2="20" y2="38" stroke="rgba(57,255,20,0.12)" strokeWidth="0.5" />
+          <line x1="2" y1="20" x2="10" y2="20" stroke="rgba(57,255,20,0.12)" strokeWidth="0.5" />
+          <line x1="30" y1="20" x2="38" y2="20" stroke="rgba(57,255,20,0.12)" strokeWidth="0.5" />
+        </svg>
+      </div>
+
+      {/* Coordinate readout */}
+      <div className="absolute bottom-6 left-6 flex items-center gap-3 pointer-events-none" aria-hidden="true">
+        <span className="text-[8px] font-mono text-neon-blue/20 tracking-[0.3em]">
+          X:0042 Y:0089
+        </span>
+        <span className="w-8 h-[1px] bg-neon-blue/10" />
+        <span className="text-[8px] font-mono text-neon-green/20 tracking-[0.3em]">
+          SYS.ONLINE
+        </span>
+      </div>
+
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
         {/* Main hero layout: text left, photo right */}
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
