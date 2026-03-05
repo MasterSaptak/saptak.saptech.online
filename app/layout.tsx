@@ -6,11 +6,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://saptak.saptech.online'),
-  title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
-  description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+  title: 'Saptak Roy Akash | Fullstack Developer & Cyber Security',
+  description: 'Fullstack Developer | Cyber Security & IoT Specialist | Startup Founder. Building secure, scalable systems and businesses.',
   openGraph: {
-    title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
-    description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+    title: 'Saptak Roy Akash | Fullstack Developer & Cyber Security',
+    description: 'Fullstack Developer | Cyber Security & IoT Specialist | Startup Founder. Building secure, scalable systems and businesses.',
     url: 'https://saptak.saptech.online',
     siteName: 'Saptak Roy Akash Portfolio',
     locale: 'en_US',
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
-    description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+    title: 'Saptak Roy Akash | Fullstack Developer & Cyber Security',
+    description: 'Fullstack Developer | Cyber Security & IoT Specialist | Startup Founder. Building secure, scalable systems and businesses.',
   },
   icons: {
     icon: [

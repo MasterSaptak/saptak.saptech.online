@@ -7,11 +7,11 @@ import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "luc
 import Image from "next/image"
 
 const roles = [
-  "Systems Builder",
+  "Fullstack Developer",
   "Cyber Security",
   "Robotics & IoT",
-  "Founder & Operator",
-  "Applied AI Researcher",
+  "Startup Founder",
+  "Businessman",
 ]
 
 const stats = [
@@ -241,7 +241,7 @@ function ProfilePhoto() {
       >
         <Shield className="w-3.5 h-3.5 text-neon-blue" />
         <span className="text-xs font-mono text-neon-blue/80 tracking-wider uppercase">
-          Secure Systems Architect
+          Entrepreneur & Fullstack Dev
         </span>
       </motion.div>
     </motion.div>
@@ -344,8 +344,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="text-muted-foreground text-base lg:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed"
             >
-              Designing secure and scalable systems for real-world problems.
-              Building at the intersection of security, robotics, and applied AI.
+              Building scalable fullstack applications, exploring the frontiers of IoT & Cyber Security, and driving business innovation through tech startups.
             </motion.p>
 
             {/* CTA Buttons */}
