@@ -5,8 +5,22 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://saptak.saptech.online'),
   title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
   description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+  openGraph: {
+    title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
+    description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+    url: 'https://saptak.saptech.online',
+    siteName: 'Saptak Roy Akash Portfolio',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Saptak Roy Akash | Systems Builder & Cyber Security',
+    description: 'Designing secure and scalable systems for real-world problems. Cyber Security, Robotics, IoT, and Applied AI Research.',
+  },
   icons: {
     icon: [
       {
