@@ -19,7 +19,7 @@ import { DataStream } from "@/components/data-stream"
 
 function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-green" }) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-40px" })
+  const isInView = useInView(ref, { once: true, margin: "-10px" })
 
   return (
     <div ref={ref} className="relative py-2" aria-hidden="true">
@@ -140,7 +140,7 @@ function PortfolioContent() {
 export function PortfolioApp() {
   return (
     <ModeProvider>
-      <main className="relative bg-background min-h-screen">
+      <main className="relative bg-background min-h-screen overflow-x-hidden w-full">
         <PortfolioContent />
       </main>
     </ModeProvider>

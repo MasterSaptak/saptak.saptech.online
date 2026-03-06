@@ -45,7 +45,7 @@ export function TimelineSection() {
   const headingRef = useRef<HTMLDivElement>(null)
   const isHeadingInView = useInView(headingRef, { once: true })
   const lineRef = useRef<HTMLDivElement>(null)
-  const isLineInView = useInView(lineRef, { once: true, margin: "-100px" })
+  const isLineInView = useInView(lineRef, { once: true, margin: "-10px" })
 
   return (
     <section id="timeline" className="relative py-24 lg:py-32">
@@ -88,7 +88,7 @@ export function TimelineSection() {
                 key={`${event.year}-${event.title}`}
                 initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "-10px" }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className={`relative flex flex-col lg:flex-row items-start ${i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
                   } gap-6 lg:gap-12`}

@@ -17,7 +17,7 @@ export function GlitchText({
     as?: "h1" | "h2" | "h3" | "span"
 }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-80px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
     const [displayText, setDisplayText] = useState(children)
     const [isDecoding, setIsDecoding] = useState(false)
 
@@ -90,7 +90,7 @@ export function RoboReveal({
     direction?: "up" | "left" | "right"
 }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-60px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
 
     const initial = {
         opacity: 0,
@@ -142,7 +142,7 @@ export function RoboReveal({
  */
 export function SystemStatus({ message, color = "blue" }: { message: string; color?: "blue" | "green" }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-40px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
     const [text, setText] = useState("")
 
     useEffect(() => {

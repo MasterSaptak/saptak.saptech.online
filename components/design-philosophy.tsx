@@ -77,7 +77,7 @@ export function DesignPhilosophy() {
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-10px" }}
           className="grid md:grid-cols-3 gap-6"
         >
           {pillars.map((pillar) => (

@@ -107,7 +107,7 @@ export function ResearchSection() {
             variants={pipelineStagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: "-10px" }}
             className="grid md:grid-cols-4 gap-4"
           >
             {[

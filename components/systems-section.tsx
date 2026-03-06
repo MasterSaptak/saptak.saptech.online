@@ -264,7 +264,7 @@ export function SystemsSection() {
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-10px" }}
           className="grid md:grid-cols-2 gap-6 mb-24 lg:mb-32"
         >
           {systems.map((system) => (
@@ -300,7 +300,7 @@ export function SystemsSection() {
             variants={securityStaggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "-10px" }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {securityTopics.map((topic) => (

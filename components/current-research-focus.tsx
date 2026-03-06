@@ -83,7 +83,7 @@ export function CurrentResearchFocus() {
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "-10px" }}
           className="grid md:grid-cols-2 gap-5"
         >
           {directions.map((dir) => (

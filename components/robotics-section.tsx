@@ -107,8 +107,8 @@ function ThreatSimulation() {
           onClick={runSimulation}
           disabled={phase !== "idle"}
           className={`lab-button px-3 py-1 rounded-md text-xs font-mono transition-all ${phase === "idle"
-              ? "border border-destructive/40 text-destructive hover:bg-destructive/10 cursor-pointer"
-              : "border border-border text-muted-foreground cursor-not-allowed"
+            ? "border border-destructive/40 text-destructive hover:bg-destructive/10 cursor-pointer"
+            : "border border-border text-muted-foreground cursor-not-allowed"
             }`}
         >
           {phase === "idle" ? "Simulate Attack" : phase === "attack" ? "Attacking..." : phase === "intercept" ? "Intercepting..." : "Mitigated"}
@@ -116,19 +116,19 @@ function ThreatSimulation() {
       </div>
 
       {/* Node chain */}
-      <div className="flex items-center gap-0">
+      <div className="flex items-center gap-0 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 sm:mx-0 sm:px-0">
         {nodes.map((node, i) => (
           <div key={node} className="flex items-center">
             <div
               className={`px-3 py-2 rounded-lg border text-xs font-mono transition-all duration-300 ${phase === "attack" && i === 0
-                  ? "border-destructive/60 bg-destructive/10 text-destructive threat-active"
-                  : phase === "attack" && i === 1
-                    ? "border-destructive/40 bg-destructive/5 text-destructive/70"
-                    : phase === "intercept" && i === 2
-                      ? "border-neon-blue/60 bg-neon-blue/10 text-neon-blue glow-blue"
-                      : phase === "mitigated"
-                        ? "border-neon-green/40 bg-neon-green/5 text-neon-green"
-                        : "border-border bg-secondary/30 text-muted-foreground"
+                ? "border-destructive/60 bg-destructive/10 text-destructive threat-active"
+                : phase === "attack" && i === 1
+                  ? "border-destructive/40 bg-destructive/5 text-destructive/70"
+                  : phase === "intercept" && i === 2
+                    ? "border-neon-blue/60 bg-neon-blue/10 text-neon-blue glow-blue"
+                    : phase === "mitigated"
+                      ? "border-neon-green/40 bg-neon-green/5 text-neon-green"
+                      : "border-border bg-secondary/30 text-muted-foreground"
                 }`}
             >
               {node}
@@ -410,8 +410,8 @@ export function RoboticsSection() {
               >
                 <div
                   className={`w-16 h-16 rounded-xl border flex items-center justify-center mb-3 relative z-10 transition-all duration-300 node-pulse ${selectedNode === i
-                      ? "bg-neon-blue/15 border-neon-blue/50 glow-blue"
-                      : "bg-secondary border-border group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5"
+                    ? "bg-neon-blue/15 border-neon-blue/50 glow-blue"
+                    : "bg-secondary border-border group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5"
                     }`}
                 >
                   <step.icon className="w-7 h-7 text-neon-blue" />
@@ -450,7 +450,7 @@ export function RoboticsSection() {
           variants={archStagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-10px" }}
           className="grid md:grid-cols-3 gap-6"
         >
           {[
