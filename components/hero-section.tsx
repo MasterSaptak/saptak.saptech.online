@@ -15,10 +15,10 @@ const roles = [
 ]
 
 const stats = [
-  { label: "Ventures Built", value: "5+", icon: Terminal },
-  { label: "Systems Developed", value: "10+", icon: FileCode },
-  { label: "Founder Since", value: "18", icon: Shield },
-  { label: "Research Paper", value: "1", icon: Bot },
+  { label: "Ventures Launched", value: "5+", icon: Terminal },
+  { label: "AI Systems", value: "3+", icon: Bot },
+  { label: "IoT Nodes", value: "50+", icon: FileCode },
+  { label: "System Uptime", value: "99%", icon: Shield },
 ]
 
 function TypewriterText() {
@@ -322,9 +322,9 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-4 text-balance"
+              className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight text-foreground mb-4 text-balance leading-[0.9]"
             >
-              Saptak Roy Akash
+              Saptak <span className="text-stroke-neon block lg:inline">Roy Akash</span>
             </motion.h1>
 
             {/* Typing Role */}

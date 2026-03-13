@@ -13,6 +13,7 @@ import { CurrentResearchFocus } from "@/components/current-research-focus"
 import { Footer } from "@/components/footer"
 import { SystemsAssistant } from "@/components/systems-assistant"
 import { SkillsSection } from "@/components/skills-section"
+import { EntrepreneurshipSection } from "@/components/entrepreneurship-section"
 import { ModeProvider, useMode } from "@/components/mode-context"
 import { CircuitBackground } from "@/components/circuit-background"
 import { ScannerBeam } from "@/components/scanner-beam"
@@ -79,6 +80,8 @@ function PortfolioContent() {
               transition={{ duration: 0.4 }}
             >
               <SectionDivider color="neon-blue" />
+              <EntrepreneurshipSection />
+              <SectionDivider color="neon-green" />
               <SystemsSection />
               <SectionDivider color="neon-green" />
               <RoboticsSection />
@@ -128,12 +131,25 @@ function PortfolioContent() {
       {/* Animated background grid overlay */}
       <div className="animated-grid-overlay" aria-hidden="true" />
 
-      {/* Subtle full-page scanline overlay */}
+      {/* Mode-specific background overlays */}
+      <AnimatePresence>
+        {mode === "research" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_70%_30%,rgba(57,255,20,0.03)_0%,transparent_50%)]"
+          />
+        )}
+      </AnimatePresence>
+
       <div
         className="pointer-events-none fixed inset-0 z-[60] opacity-[0.012]"
         aria-hidden="true"
         style={{
-          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)",
+          background: mode === "founder" 
+            ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)"
+            : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57,255,20,0.08) 2px, rgba(57,255,20,0.08) 4px)",
         }}
       />
     </>

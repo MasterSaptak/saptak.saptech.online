@@ -90,24 +90,50 @@ export function CurrentResearchFocus() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-10px" }}
-          className="grid md:grid-cols-2 gap-5"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
         >
-          {directions.map((dir) => (
+          {directions.map((dir, idx) => (
             <motion.div
               key={dir.title}
               variants={staggerItem}
-              className="glass-card research-highlight rounded-xl p-6 flex items-start gap-4 hover-elevate group"
+              className="group relative glass-card p-6 rounded-xl border border-border/50 hover:border-neon-green/30 transition-all duration-500 hover:shadow-[0_0_20px_rgba(57,255,20,0.05)] overflow-hidden"
             >
-              <div className="w-10 h-10 rounded-lg bg-neon-green/10 border border-neon-green/20 flex items-center justify-center shrink-0 node-pulse group-hover:bg-neon-green/20 transition-colors duration-300">
-                <dir.icon className="w-5 h-5 text-neon-green" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground mb-1.5">
+              {/* Data stream line */}
+              <div className="absolute top-0 left-6 w-px h-full bg-gradient-to-b from-transparent via-neon-green/10 to-transparent group-hover:via-neon-green/30 transition-all duration-500" />
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-neon-green/10 border border-neon-green/20 flex items-center justify-center shrink-0 node-pulse group-hover:bg-neon-green/20 transition-colors duration-300">
+                    <dir.icon className="w-5 h-5 text-neon-green" />
+                  </div>
+                  <span className="text-[10px] font-mono text-muted-foreground bg-secondary/30 px-2 py-0.5 rounded border border-border uppercase">
+                    ID: {0x100 + idx}
+                  </span>
+                </div>
+
+                <h3 className="text-sm font-bold text-foreground mb-2 group-hover:text-neon-green transition-colors">
                   {dir.title}
                 </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                   {dir.description}
                 </p>
+
+                <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/50">
+                  <div className="flex flex-col">
+                    <span className="text-[8px] font-mono text-muted-foreground uppercase opacity-50">Discovery Rate</span>
+                    <span className="text-[10px] font-mono text-neon-green">89.4%</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[8px] font-mono text-muted-foreground uppercase opacity-50">Impact Factor</span>
+                    <span className="text-[10px] font-mono text-neon-blue">A+</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative corner */}
+              <div className="absolute top-0 right-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-0 right-0 w-px h-4 bg-neon-green" />
+                <div className="absolute top-0 right-0 w-4 h-px bg-neon-green" />
               </div>
             </motion.div>
           ))}

@@ -2,8 +2,9 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Shield, Wifi, Brain, Lock, CreditCard, Globe, Github, ExternalLink } from "lucide-react"
+import { Shield, Wifi, Brain, Lock, CreditCard, Globe, Github, ExternalLink, Cpu, Layout } from "lucide-react"
 import Image from "next/image"
+import { HardwareBlueprint } from "./hardware-blueprint"
 
 const systems = [
   {
@@ -82,16 +83,25 @@ function SystemCard({
       variants={staggerItem}
       className="group relative glass-card rounded-xl overflow-hidden glow-border-hover project-card"
     >
-      {/* Image area with overlay */}
-      <div className="relative h-48 overflow-hidden">
-        <Image
-          src={system.image}
-          alt={system.title}
-          fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+      {/* Image area with overlay or Blueprint */}
+      <div className="relative h-56 overflow-hidden">
+        {system.title.toLowerCase() === "sepsisalert" ? (
+          <HardwareBlueprint type="sepsis" className="w-full h-full border-none rounded-none" />
+        ) : system.title.toLowerCase() === "iobotanica" ? (
+          <HardwareBlueprint type="iobotanica" className="w-full h-full border-none rounded-none" />
+        ) : (
+          <>
+            <Image
+              src={system.image}
+              alt={system.title}
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+          </>
+        )}
+        
         {/* Hover overlay glow */}
         <div
           className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isBlue

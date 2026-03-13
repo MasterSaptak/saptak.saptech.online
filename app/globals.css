@@ -595,6 +595,18 @@ body {
   will-change: transform;
 }
 
+/* ===== TEXT STROKE NEON ===== */
+.text-stroke-neon {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 229, 255, 0.4);
+  transition: -webkit-text-stroke 0.5s ease;
+}
+
+.text-stroke-neon:hover {
+  -webkit-text-stroke: 1px rgba(0, 229, 255, 0.8);
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+}
+
 /* ===== PROJECT CARD HOVER ===== */
 .project-card {
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),

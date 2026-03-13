@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react"
 import { useMode } from "./mode-context"
 
 const founderLinks = [
+  { label: "Ventures", href: "#entrepreneurship" },
   { label: "Systems", href: "#systems" },
   { label: "Security", href: "#security" },
   { label: "Robotics", href: "#robotics" },
