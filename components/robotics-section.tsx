@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
-import { Cpu, Cloud, Wifi, Radio, Brain, Server, X, Shield, AlertTriangle, CheckCircle } from "lucide-react"
+import { Cpu, Cloud, Wifi, Radio, Brain, Server, X, Shield, AlertTriangle, CheckCircle, Database, Activity } from "lucide-react"
+import { DecryptEffect, FloatingStatus } from "./tech-animations"
 
 const pipelineSteps = [
   {
@@ -215,11 +216,14 @@ function TelemetryDashboard() {
     >
       <div className="flex items-center justify-between mb-5">
         <h3 className="font-mono text-sm font-semibold text-neon-green">
-          IoT Telemetry
+          <DecryptEffect>IoT Telemetry Stream</DecryptEffect>
         </h3>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-neon-green pulse-glow" />
-          <span className="text-xs font-mono text-neon-green">SECURE</span>
+        <div className="flex items-center gap-2">
+          <FloatingStatus label="Protocol" value="MQTT" color="green" />
+          <div className="flex items-center gap-1.5 ml-2">
+            <span className="w-2 h-2 rounded-full bg-neon-green pulse-glow" />
+            <span className="text-xs font-mono text-neon-green">SECURE</span>
+          </div>
         </div>
       </div>
 
@@ -417,7 +421,7 @@ export function RoboticsSection() {
                   <step.icon className="w-7 h-7 text-neon-blue" />
                 </div>
                 <span className="font-mono text-sm font-semibold text-foreground mb-1">
-                  {step.label}
+                  <DecryptEffect>{step.label}</DecryptEffect>
                 </span>
                 <span className="text-xs text-muted-foreground leading-relaxed">
                   {step.desc}

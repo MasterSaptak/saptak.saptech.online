@@ -2,7 +2,8 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Briefcase, Globe, TrendingUp, Users, Cpu, Rocket } from "lucide-react"
+import { Briefcase, Globe, TrendingUp, Users, Cpu, Rocket, BarChart3, Activity, Database } from "lucide-react"
+import { FloatingStatus, DecryptEffect } from "./tech-animations"
 
 const ventures = [
   {
@@ -114,11 +115,25 @@ export function EntrepreneurshipSection() {
                   </div>
 
                   <h3 className="text-2xl font-bold text-foreground mb-1 group-hover:text-glow transition-all duration-300">
-                    {venture.title}
+                    <DecryptEffect>{venture.title}</DecryptEffect>
                   </h3>
                   <p className={`text-xs font-mono uppercase tracking-wider mb-4 ${isBlue ? "text-neon-blue/80" : "text-neon-green/80"}`}>
                     {venture.role}
                   </p>
+
+                  {/* Venture Stats */}
+                  <div className="flex gap-3 mb-6">
+                    <FloatingStatus 
+                      label="Deployment" 
+                      value={isBlue ? "Stable" : "Active"} 
+                      color={isBlue ? "blue" : "green"}
+                    />
+                    <FloatingStatus 
+                      label="Uptime" 
+                      value={isBlue ? "99.9%" : "100%"} 
+                      color={isBlue ? "blue" : "green"}
+                    />
+                  </div>
 
                   <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                     {venture.description}

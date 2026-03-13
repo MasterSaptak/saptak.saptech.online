@@ -2,7 +2,8 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Code, Database, Smartphone, BrainCircuit, Cpu, Shield, Wrench } from "lucide-react"
+import { Code, Database, Smartphone, BrainCircuit, Cpu, Shield, Wrench, Terminal, Activity } from "lucide-react"
+import { DecryptEffect, FloatingStatus } from "./tech-animations"
 
 const skillCategories = [
   {
@@ -90,7 +91,7 @@ export function SkillsSection() {
             className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 mx-auto ${isHeadingInView ? "heading-glow" : ""
               }`}
           >
-            Technical Skills Matrix
+            <DecryptEffect>Technical Skills Matrix</DecryptEffect>
           </h2>
           <p className="text-muted-foreground mt-3 max-w-xl mx-auto leading-relaxed">
             A comprehensive overview of the programming languages, frameworks, and tools used to build intelligent systems.
@@ -116,7 +117,19 @@ export function SkillsSection() {
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300 ${isBlue ? "bg-neon-blue/10 border border-neon-blue/20 group-hover:bg-neon-blue/20 text-neon-blue" : "bg-neon-green/10 border border-neon-green/20 group-hover:bg-neon-green/20 text-neon-green"}`}>
                     <category.icon className="w-4 h-4" />
                   </div>
-                  <h3 className="font-semibold text-foreground">{category.title}</h3>
+                  <h3 className="font-semibold text-foreground">
+                    <DecryptEffect>{category.title}</DecryptEffect>
+                  </h3>
+                </div>
+                
+                {/* Tech Status Tag */}
+                <div className="flex justify-end mb-4">
+                  <FloatingStatus 
+                    label="Proficiency" 
+                    value={isBlue ? "95%" : "89%"} 
+                    color={isBlue ? "blue" : "green"}
+                    className="opacity-60 group-hover:opacity-100"
+                  />
                 </div>
                 
                 <div className="flex flex-wrap gap-2">
