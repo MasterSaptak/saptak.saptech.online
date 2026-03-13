@@ -7,27 +7,33 @@ import { Shield, Cpu, Lock, Bot } from "lucide-react"
 const directions = [
   {
     icon: Shield,
-    title: "Securing Cyber-Physical Systems",
-    description:
-      "Bridging the gap between digital security and physical infrastructure. Authentication, integrity verification, and fail-safe protocols for real-world actuators.",
+    title: "Robotics and Intelligent Systems",
+    description: "Developing autonomous physical agents capable of complex decision-making and interaction with their environment.",
   },
   {
     icon: Cpu,
-    title: "Lightweight Edge AI for IoT",
-    description:
-      "Deploying optimized inference models on resource-constrained microcontrollers. Reducing cloud dependency while maintaining accuracy at the edge.",
+    title: "Embedded Systems and IoT Devices",
+    description: "Designing efficient sensor-actuator loops on resource-constrained microcontrollers, creating the foundation for the smart environments.",
   },
   {
     icon: Lock,
-    title: "Cryptographic Experimentation",
-    description:
-      "Exploring multi-layer ciphertext generation and high-entropy randomization techniques. Building on the RBSAPS_Cipher framework for novel encryption approaches.",
+    title: "Cyber-Physical Systems & Sensor Networks",
+    description: "Bridging the gap between digital security and physical infrastructure with fail-safe protocols and robust communication.",
   },
   {
     icon: Bot,
-    title: "Autonomous Systems Architecture",
-    description:
-      "Designing decision-making pipelines for autonomous agents. Event-driven architectures with safety constraints and human-in-the-loop overrides.",
+    title: "AI for Healthcare Technologies",
+    description: "Applying machine learning to medical data (like the SepsisAlert system) to provide predictive insights and early warnings.",
+  },
+  {
+    icon: Cpu,
+    title: "Computer Vision and Edge AI",
+    description: "Deploying deep learning models (like PotatoCare and GLAMORA) optimized for real-time inference on edge devices.",
+  },
+  {
+    icon: Shield,
+    title: "Technology Entrepreneurship",
+    description: "Building scalable startup systems and digital platforms, demonstrating end-to-end capabilities from concept to production.",
   },
 ]
 

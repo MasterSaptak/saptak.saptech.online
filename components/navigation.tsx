@@ -41,8 +41,24 @@ export function Navigation() {
           SRA<span className="text-muted-foreground">.sys</span>
         </a>
 
-        {/* Center: Mode Toggle */}
-        <div className="hidden md:flex items-center">
+        {/* Center: Mode Toggles */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Site Switcher */}
+          <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5">
+            <button className="px-3 py-1 rounded-full text-xs font-mono bg-neon-blue/15 text-neon-blue border border-neon-blue/30 cursor-default">
+              Portfolio
+            </button>
+            <a
+              href="https://error-ccx404.saptech.online/"
+              className="px-3 py-1 rounded-full text-xs font-mono text-muted-foreground hover:text-foreground border border-transparent transition-all duration-300"
+            >
+              Community
+            </a>
+          </div>
+
+          <div className="h-4 w-px bg-border/50" />
+
+          {/* Mode Toggle */}
           <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5">
             <button
               onClick={() => setMode("founder")}
@@ -107,7 +123,20 @@ export function Navigation() {
           animate={{ opacity: 1, height: "auto" }}
           className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl"
         >
-          <div className="px-6 py-4 flex flex-col gap-4">
+          <div className="px-6 py-4 flex flex-col gap-6">
+            {/* Mobile site switcher */}
+            <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5 w-fit">
+              <button className="px-3 py-1 rounded-full text-xs font-mono bg-neon-blue/15 text-neon-blue border border-neon-blue/30 cursor-default">
+                Portfolio
+              </button>
+              <a
+                href="https://error-ccx404.saptech.online/"
+                className="px-3 py-1 rounded-full text-xs font-mono text-muted-foreground border border-transparent"
+              >
+                Community
+              </a>
+            </div>
+
             {/* Mobile mode toggle */}
             <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5 w-fit">
               <button

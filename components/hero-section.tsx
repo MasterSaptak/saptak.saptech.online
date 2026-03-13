@@ -7,11 +7,11 @@ import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "luc
 import Image from "next/image"
 
 const roles = [
-  "Fullstack Developer",
-  "Cyber Security",
-  "Robotics & IoT",
+  "Full-Stack Developer",
+  "AI Engineer",
+  "IoT/Robotics Enthusiast",
+  "Cybersecurity Learner",
   "Startup Founder",
-  "Businessman",
 ]
 
 const stats = [
@@ -344,7 +344,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="text-muted-foreground text-base lg:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed"
             >
-              Building scalable fullstack applications, exploring the frontiers of IoT & Cyber Security, and driving business innovation through tech startups.
+              Building real-world intelligent systems integrating sensors, embedded microcontrollers, cloud services, and machine learning models for healthcare, sustainability, and community safety.
             </motion.p>
 
             {/* CTA Buttons */}

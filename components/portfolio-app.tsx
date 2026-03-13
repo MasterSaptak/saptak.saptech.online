@@ -12,6 +12,7 @@ import { ResearchSection } from "@/components/research-section"
 import { CurrentResearchFocus } from "@/components/current-research-focus"
 import { Footer } from "@/components/footer"
 import { SystemsAssistant } from "@/components/systems-assistant"
+import { SkillsSection } from "@/components/skills-section"
 import { ModeProvider, useMode } from "@/components/mode-context"
 import { CircuitBackground } from "@/components/circuit-background"
 import { ScannerBeam } from "@/components/scanner-beam"
@@ -62,9 +63,11 @@ function PortfolioContent() {
       >
         <HeroSection />
 
-        {/* Design Philosophy - always visible below Hero */}
+        {/* Design Philosophy & Skills - always visible below Hero */}
         <SectionDivider color="neon-blue" />
         <DesignPhilosophy />
+        <SectionDivider color="neon-green" />
+        <SkillsSection />
 
         <AnimatePresence mode="wait">
           {mode === "founder" ? (

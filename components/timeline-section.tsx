@@ -5,39 +5,28 @@ import { useRef } from "react"
 
 const events = [
   {
-    year: "2018",
-    title: "PC Servicing & Hardware",
-    description:
-      "Started with hands-on hardware. Understanding systems from the silicon up. Built a foundation in diagnostics, repair, and infrastructure thinking.",
-    color: "neon-blue",
-  },
-  {
     year: "2020",
-    title: "Gaming Zone",
-    description:
-      "Launched a gaming entertainment business. First real venture — managing operations, customer experience, and revenue at 18.",
-    color: "neon-green",
-  },
-  {
-    year: "2020",
-    title: "Saptech",
-    description:
-      "Founded a technology services company. Full-stack development, client management, and scaling a technical team from scratch.",
+    title: "Saptech - Founder & IT Consultant",
+    description: "Founded a technology consultancy building real-world digital systems, full-stack web applications, mobile apps, and scalable business software.",
     color: "neon-blue",
   },
   {
     year: "2025",
-    title: "Dhopa",
-    description:
-      "Built an on-demand laundry platform with international payment integration, secure architecture, and microservice design for scale.",
+    title: "Dhopa - Founder & Brand Promoter",
+    description: "Built a student-focused smart laundry pickup and delivery service. Designed the service workflow, logistics, and pricing strategy.",
     color: "neon-green",
   },
   {
-    year: "Now",
-    title: "AI + Cyber + Robotics",
-    description:
-      "Converging security, IoT, and applied AI research. Building systems that operate in the real world with safety, intelligence, and scale.",
+    year: "Community",
+    title: "Leadership & Tech Events",
+    description: "Founding member of Bangladesh Academy of Geological Sciences. DevFest Kolkata 2023 outreach. Organizer of Anandamela cultural festival. Founder of Shantibuzz Chess Squad.",
     color: "neon-blue",
+  },
+  {
+    year: "Now",
+    title: "AI, Cyber & Robotics Systems",
+    description: "Converging security, IoT, and applied AI research. Building intelligent systems that operate in the real world with safety, intelligence, and scale.",
+    color: "neon-green",
   },
 ]
 
@@ -65,7 +54,7 @@ export function TimelineSection() {
             className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 ${isHeadingInView ? "heading-glow" : ""
               }`}
           >
-            Founder Timeline
+            Experience & Leadership
           </h2>
           <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">
             From hardware repair to AI research. A story of continuous building.
