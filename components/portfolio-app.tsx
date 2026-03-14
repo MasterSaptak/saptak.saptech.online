@@ -18,6 +18,8 @@ import { ModeProvider, useMode } from "@/components/mode-context"
 import { CircuitBackground } from "@/components/circuit-background"
 import { ScannerBeam } from "@/components/scanner-beam"
 import { DataStream } from "@/components/data-stream"
+import { SignalProvider } from "@/components/signal-context"
+import { SignalOverlay } from "@/components/signal-overlay"
 
 function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-green" }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -147,7 +149,7 @@ function PortfolioContent() {
         className="pointer-events-none fixed inset-0 z-[60] opacity-[0.012]"
         aria-hidden="true"
         style={{
-          background: mode === "founder" 
+          background: mode === "founder"
             ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)"
             : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57,255,20,0.08) 2px, rgba(57,255,20,0.08) 4px)",
         }}
@@ -159,9 +161,12 @@ function PortfolioContent() {
 export function PortfolioApp() {
   return (
     <ModeProvider>
-      <main className="relative bg-background min-h-screen overflow-x-hidden w-full">
-        <PortfolioContent />
-      </main>
+      <SignalProvider>
+        <main className="relative bg-background min-h-screen overflow-x-hidden w-full">
+          <PortfolioContent />
+          <SignalOverlay />
+        </main>
+      </SignalProvider>
     </ModeProvider>
   )
 }

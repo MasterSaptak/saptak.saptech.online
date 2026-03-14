@@ -63,21 +63,19 @@ export function Navigation() {
           <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5">
             <button
               onClick={() => setMode("founder")}
-              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${
-                mode === "founder"
+              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "founder"
                   ? "bg-neon-blue/15 text-neon-blue border border-neon-blue/30"
                   : "text-muted-foreground hover:text-foreground border border-transparent"
-              }`}
+                }`}
             >
               Founder
             </button>
             <button
               onClick={() => setMode("research")}
-              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${
-                mode === "research"
+              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "research"
                   ? "bg-neon-green/15 text-neon-green border border-neon-green/30"
                   : "text-muted-foreground hover:text-foreground border border-transparent"
-              }`}
+                }`}
             >
               Research
             </button>
@@ -95,11 +93,10 @@ export function Navigation() {
                 exit={{ opacity: 0, y: 5 }}
                 transition={{ duration: 0.2 }}
                 href={link.href}
-                className={`text-sm transition-colors ${
-                  link.label === "Terminal"
+                className={`text-sm transition-colors ${link.label === "Terminal"
                     ? "font-mono text-neon-green hover:text-neon-green/80"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {link.label === "Terminal" ? `> ${link.label}` : link.label}
               </motion.a>
@@ -142,21 +139,19 @@ export function Navigation() {
             <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5 w-fit">
               <button
                 onClick={() => setMode("founder")}
-                className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${
-                  mode === "founder"
+                className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "founder"
                     ? "bg-neon-blue/15 text-neon-blue border border-neon-blue/30"
                     : "text-muted-foreground border border-transparent"
-                }`}
+                  }`}
               >
                 Founder
               </button>
               <button
                 onClick={() => setMode("research")}
-                className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${
-                  mode === "research"
+                className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "research"
                     ? "bg-neon-green/15 text-neon-green border border-neon-green/30"
                     : "text-muted-foreground border border-transparent"
-                }`}
+                  }`}
               >
                 Research
               </button>
@@ -167,11 +162,10 @@ export function Navigation() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`text-sm transition-colors ${
-                  link.label === "Terminal"
+                className={`text-sm transition-colors ${link.label === "Terminal"
                     ? "font-mono text-neon-green"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {link.label === "Terminal" ? `> ${link.label}` : link.label}
               </a>

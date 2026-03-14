@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Briefcase, Globe, TrendingUp, Users, Cpu, Rocket, BarChart3, Activity, Database } from "lucide-react"
 import { FloatingStatus, DecryptEffect } from "./tech-animations"
+import { useSignal } from "./signal-context"
 
 const ventures = [
   {
@@ -58,8 +59,13 @@ const cardVariants = {
 }
 
 export function EntrepreneurshipSection() {
+  const { emitSignal } = useSignal()
   const headingRef = useRef<HTMLDivElement>(null)
   const isHeadingInView = useInView(headingRef, { once: true })
+
+  const handleMouseEnter = (e: React.MouseEvent, color: "blue" | "green") => {
+    emitSignal(e.clientX, e.clientY, color)
+  }
 
   return (
     <section id="entrepreneurship" className="relative py-24 lg:py-32">
@@ -99,6 +105,7 @@ export function EntrepreneurshipSection() {
               <motion.div
                 key={venture.title}
                 variants={cardVariants}
+                onMouseEnter={(e) => handleMouseEnter(e, isBlue ? "blue" : "green")}
                 className="glass-card group relative p-8 rounded-2xl border border-border/50 hover:border-foreground/20 transition-all duration-500 overflow-hidden"
               >
                 {/* Background Glow */}

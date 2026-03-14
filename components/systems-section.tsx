@@ -5,6 +5,8 @@ import { useRef } from "react"
 import { Shield, Wifi, Brain, Lock, CreditCard, Globe, Github, ExternalLink, Cpu, Layout } from "lucide-react"
 import Image from "next/image"
 import { HardwareBlueprint } from "./hardware-blueprint"
+import { useSignal } from "./signal-context"
+import { DecryptEffect } from "./tech-animations"
 
 const systems = [
   {
@@ -76,11 +78,17 @@ function SystemCard({
 }: {
   system: (typeof systems)[0]
 }) {
+  const { emitSignal } = useSignal()
   const isBlue = system.color === "neon-blue"
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    emitSignal(e.clientX, e.clientY, isBlue ? "blue" : "green")
+  }
 
   return (
     <motion.div
       variants={staggerItem}
+      onMouseEnter={handleMouseEnter}
       className="group relative glass-card rounded-xl overflow-hidden glow-border-hover project-card"
     >
       {/* Image area with overlay or Blueprint */}
@@ -101,12 +109,12 @@ function SystemCard({
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
           </>
         )}
-        
+
         {/* Hover overlay glow */}
         <div
           className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isBlue
-              ? "bg-gradient-to-t from-neon-blue/10 via-transparent to-transparent"
-              : "bg-gradient-to-t from-neon-green/10 via-transparent to-transparent"
+            ? "bg-gradient-to-t from-neon-blue/10 via-transparent to-transparent"
+            : "bg-gradient-to-t from-neon-green/10 via-transparent to-transparent"
             }`}
         />
         {/* Scan line on hover */}
@@ -125,7 +133,7 @@ function SystemCard({
             className={`text-lg lg:text-xl font-bold transition-colors duration-300 ${isBlue ? "text-neon-blue" : "text-neon-green"
               }`}
           >
-            {system.title}
+            <DecryptEffect>{system.title}</DecryptEffect>
           </h3>
           <div className="flex items-center gap-2 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
             {system.github && (
@@ -164,8 +172,8 @@ function SystemCard({
             <span
               key={t}
               className={`px-2.5 py-1 text-xs font-mono rounded-md border transition-all duration-300 ${isBlue
-                  ? "border-neon-blue/20 bg-neon-blue/8 text-neon-blue/80 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/12"
-                  : "border-neon-green/20 bg-neon-green/8 text-neon-green/80 group-hover:border-neon-green/40 group-hover:bg-neon-green/12"
+                ? "border-neon-blue/20 bg-neon-blue/8 text-neon-blue/80 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/12"
+                : "border-neon-green/20 bg-neon-green/8 text-neon-green/80 group-hover:border-neon-green/40 group-hover:bg-neon-green/12"
                 }`}
             >
               {t}
@@ -236,11 +244,16 @@ const securityStaggerItem = {
 }
 
 export function SystemsSection() {
+  const { emitSignal } = useSignal()
   const ref = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLDivElement>(null)
   const securityHeadingRef = useRef<HTMLDivElement>(null)
   const isHeadingInView = useInView(headingRef, { once: true })
   const isSecurityHeadingInView = useInView(securityHeadingRef, { once: true })
+
+  const handleSecurityMouseEnter = (e: React.MouseEvent) => {
+    emitSignal(e.clientX, e.clientY, "blue")
+  }
 
   return (
     <section id="systems" className="relative py-24 lg:py-32">
@@ -261,7 +274,7 @@ export function SystemsSection() {
             className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 ${isHeadingInView ? "heading-glow" : ""
               }`}
           >
-            Featured Projects
+            <DecryptEffect>Featured Systems</DecryptEffect>
           </h2>
           <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">
             Not just projects. Production systems designed with security, scalability, and real-world constraints in mind.
@@ -299,7 +312,7 @@ export function SystemsSection() {
               className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 ${isSecurityHeadingInView ? "heading-glow" : ""
                 }`}
             >
-              Security-First Mindset
+              <DecryptEffect>Security-First Mindset</DecryptEffect>
             </h2>
             <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">
               Security is not an afterthought. It is the foundation on which every system I design is built.
@@ -317,6 +330,7 @@ export function SystemsSection() {
               <motion.div
                 key={topic.title}
                 variants={securityStaggerItem}
+                onMouseEnter={handleSecurityMouseEnter}
                 className="glass-card rounded-xl p-6 group transition-all duration-500 glow-border-hover hover-elevate"
               >
                 <div className="w-10 h-10 rounded-lg bg-neon-blue/10 border border-neon-blue/20 flex items-center justify-center mb-4 group-hover:bg-neon-blue/20 transition-colors duration-300">

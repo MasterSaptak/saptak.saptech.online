@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Code, Database, Smartphone, BrainCircuit, Cpu, Shield, Wrench, Terminal, Activity } from "lucide-react"
 import { DecryptEffect, FloatingStatus } from "./tech-animations"
+import { useSignal } from "./signal-context"
 
 const skillCategories = [
   {
@@ -70,8 +71,13 @@ const staggerItem = {
 }
 
 export function SkillsSection() {
+  const { emitSignal } = useSignal()
   const headingRef = useRef<HTMLDivElement>(null)
   const isHeadingInView = useInView(headingRef, { once: true })
+
+  const handleMouseEnter = (e: React.MouseEvent, color: "blue" | "green") => {
+    emitSignal(e.clientX, e.clientY, color)
+  }
 
   return (
     <section id="skills" className="relative py-24 lg:py-32">
@@ -111,6 +117,7 @@ export function SkillsSection() {
               <motion.div
                 key={category.title}
                 variants={staggerItem}
+                onMouseEnter={(e) => handleMouseEnter(e, isBlue ? "blue" : "green")}
                 className="glass-card rounded-xl p-6 group transition-all duration-500 hover-elevate glow-border-hover"
               >
                 <div className={`flex items-center gap-3 mb-4`}>

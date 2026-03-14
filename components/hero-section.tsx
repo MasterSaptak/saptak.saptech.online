@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ParticleField } from "./particle-field"
 import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "lucide-react"
 import Image from "next/image"
+import { useSignal } from "./signal-context"
 
 const roles = [
   "Full-Stack Developer",
@@ -57,8 +58,13 @@ function TypewriterText() {
 }
 
 function AnimatedCounter({ value, label, icon: Icon, delay }: { value: string; label: string; icon: React.ElementType; delay: number }) {
+  const { emitSignal } = useSignal()
   const [count, setCount] = useState(0)
   const numericValue = parseInt(value.replace("+", ""))
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    emitSignal(e.clientX, e.clientY, "blue")
+  }
 
   useEffect(() => {
     let start = 0
@@ -76,6 +82,7 @@ function AnimatedCounter({ value, label, icon: Icon, delay }: { value: string; l
     <motion.div
       initial={{ opacity: 0, y: 25, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
+      onMouseEnter={handleMouseEnter}
       transition={{ duration: 0.6, delay }}
       className="glass-card rounded-xl p-4 lg:p-6 flex flex-col items-center gap-2 hover-elevate"
     >
