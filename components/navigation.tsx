@@ -11,15 +11,22 @@ const founderLinks = [
   { label: "Security", href: "#security" },
   { label: "Robotics", href: "#robotics" },
   { label: "Timeline", href: "#timeline" },
-  { label: "Research", href: "#research" },
   { label: "Terminal", href: "/terminal" },
 ]
 
 const researchLinks = [
-  { label: "Research", href: "#research" },
-  { label: "Security", href: "#security" },
-  { label: "Architecture", href: "#robotics" },
-  { label: "Systems", href: "#systems" },
+  { label: "Core Research", href: "#research" },
+  { label: "Protocol Security", href: "#security" },
+  { label: "System Arch", href: "#systems" },
+  { label: "Bio-Robotics", href: "#robotics" },
+  { label: "Terminal", href: "/terminal" },
+]
+
+const gameDevLinks = [
+  { label: "Unity_ECS", href: "#game-dev" },
+  { label: "Physics_SOLVER", href: "#game-dev" },
+  { label: "VFX_STUDIO", href: "#game-dev" },
+  { label: "Hardware_Bot", href: "#robotics" },
   { label: "Terminal", href: "/terminal" },
 ]
 
@@ -27,7 +34,7 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const { mode, setMode } = useMode()
 
-  const navLinks = mode === "founder" ? founderLinks : researchLinks
+  const navLinks = mode === "founder" ? founderLinks : mode === "research" ? researchLinks : gameDevLinks
 
   return (
     <motion.nav
@@ -44,6 +51,8 @@ export function Navigation() {
 
         {/* Center: Mode Toggles */}
         <div className="hidden md:flex items-center gap-4">
+
+
           {/* Site Switcher */}
           <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5">
             <button className="px-3 py-1 rounded-full text-xs font-mono bg-neon-blue/15 text-neon-blue border border-neon-blue/30 cursor-default">
@@ -60,11 +69,11 @@ export function Navigation() {
           <div className="h-4 w-px bg-border/50" />
 
           {/* Mode Toggle */}
-          <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5">
+          <div className="flex items-center rounded-full border border-border bg-secondary/40 p-0.5 min-w-fit">
             <button
               onClick={() => setMode("founder")}
-              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "founder"
-                  ? "bg-neon-blue/15 text-neon-blue border border-neon-blue/30"
+              className={`px-3 py-1 rounded-full text-[10px] font-mono whitespace-nowrap transition-all duration-300 ${mode === "founder"
+                  ? "bg-neon-blue/15 text-neon-blue border border-neon-blue/30 shadow-[0_0_10px_rgba(0,229,255,0.2)]"
                   : "text-muted-foreground hover:text-foreground border border-transparent"
                 }`}
             >
@@ -72,12 +81,21 @@ export function Navigation() {
             </button>
             <button
               onClick={() => setMode("research")}
-              className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "research"
-                  ? "bg-neon-green/15 text-neon-green border border-neon-green/30"
+              className={`px-3 py-1 rounded-full text-[10px] font-mono whitespace-nowrap transition-all duration-300 ${mode === "research"
+                  ? "bg-neon-green/15 text-neon-green border border-neon-green/30 shadow-[0_0_10px_rgba(57,255,20,0.2)]"
                   : "text-muted-foreground hover:text-foreground border border-transparent"
                 }`}
             >
-              Research
+              Researcher
+            </button>
+            <button
+              onClick={() => setMode("game-dev")}
+              className={`px-3 py-1 rounded-full text-[10px] font-mono whitespace-nowrap transition-all duration-300 ${mode === "game-dev"
+                  ? "bg-purple-500/15 text-purple-400 border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
+                  : "text-muted-foreground hover:text-foreground border border-transparent"
+                }`}
+            >
+              Game Design
             </button>
           </div>
         </div>
@@ -153,7 +171,16 @@ export function Navigation() {
                     : "text-muted-foreground border border-transparent"
                   }`}
               >
-                Research
+                Researcher
+              </button>
+              <button
+                onClick={() => setMode("game-dev")}
+                className={`px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 ${mode === "game-dev"
+                    ? "bg-neon-blue/15 text-neon-blue border border-neon-blue/30"
+                    : "text-muted-foreground border border-transparent"
+                  }`}
+              >
+                Game Design
               </button>
             </div>
 
