@@ -53,18 +53,97 @@ const getMoodColor = (mood: string, t: TerminalTheme): string => {
 const extractMood = (output: string[]): string => {
   if (output.length === 0) return "thinking"
   const first = output[0]?.trim()
-  const match = first?.match(/^\[mood:(\w+)\]/)
-  return match ? match[1] : "neutral"
+  const moodMatch = first?.match(/^\[mood:(\w+)\]/) || first?.match(/^\[(\w+)\]$/)
+  if (moodMatch) {
+    const mood = moodMatch[1].toLowerCase()
+    if (MOOD_FACES[mood]) return mood
+  }
+  return "neutral"
 }
 
 const getCleanOutput = (output: string[]): string[] => {
   if (output.length === 0) return []
-  if (output[0]?.trim().match(/^\[mood:\w+\]/)) {
+  const first = output[0]?.trim()
+  if (first?.match(/^\[mood:\w+\]/) || first?.match(/^\[\w+\]$/)) {
     const rest = output.slice(1)
     while (rest.length > 0 && rest[0] === "") rest.shift()
     return rest
   }
   return output
+}
+
+const MEMORY_KEY = "porfai-memories"
+
+function loadMemories(): Record<string, string> {
+  if (typeof window === "undefined") return {}
+  try {
+    const raw = localStorage.getItem(MEMORY_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveMemories(memories: Record<string, string>) {
+  if (typeof window === "undefined") return
+  localStorage.setItem(MEMORY_KEY, JSON.stringify(memories))
+}
+
+function extractMemoryTags(text: string): { cleaned: string; newMemories: Record<string, string> } {
+  const newMemories: Record<string, string> = {}
+  const cleaned = text.replace(/\[remember:(\w+)=([^\]]+)\]/g, (_, key, value) => {
+    newMemories[key] = value.trim()
+    return ""
+  }).trim()
+  return { cleaned, newMemories }
+}
+
+type MoodAnimation = {
+  animate: Record<string, number[]>
+  transition: Record<string, unknown>
+}
+
+const MOOD_ANIMATIONS: Record<string, MoodAnimation> = {
+  happy: {
+    animate: { y: [0, -6, 0], scale: [1, 1.15, 1] },
+    transition: { repeat: Infinity, duration: 1.2, ease: "easeInOut" },
+  },
+  sad: {
+    animate: { y: [0, 3, 0], opacity: [1, 0.6, 1] },
+    transition: { repeat: Infinity, duration: 3, ease: "easeInOut" },
+  },
+  thinking: {
+    animate: { rotate: [0, 15, -15, 0], scale: [1, 1.05, 1] },
+    transition: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+  },
+  excited: {
+    animate: { x: [-3, 3, -3, 3, 0], y: [0, -5, 0, -5, 0], scale: [1, 1.2, 1, 1.2, 1] },
+    transition: { repeat: Infinity, duration: 0.8, ease: "easeInOut" },
+  },
+  cool: {
+    animate: { scale: [1, 1.08, 1] },
+    transition: { repeat: Infinity, duration: 2.5, ease: "easeInOut" },
+  },
+  confused: {
+    animate: { rotate: [0, -10, 10, -5, 5, 0] },
+    transition: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+  },
+  love: {
+    animate: { scale: [1, 1.25, 1, 1.2, 1] },
+    transition: { repeat: Infinity, duration: 1.5, ease: "easeInOut" },
+  },
+  laughing: {
+    animate: { y: [0, -4, 0, -4, 0], rotate: [0, 5, -5, 3, 0] },
+    transition: { repeat: Infinity, duration: 0.6, ease: "easeInOut" },
+  },
+  angry: {
+    animate: { x: [-2, 2, -2, 2, 0], scale: [1, 1.1, 1] },
+    transition: { repeat: Infinity, duration: 0.4, ease: "easeInOut" },
+  },
+  neutral: {
+    animate: { opacity: [1, 0.7, 1] },
+    transition: { repeat: Infinity, duration: 3, ease: "easeInOut" },
+  },
 }
 
 const stringify = (val: unknown): string => {
@@ -118,7 +197,7 @@ const ALL_COMMANDS = [
   "neofetch", "date", "echo", "history", "uptime", "uname",
   "matrix", "hack", "cowsay", "banner", "ping", "sudo",
   "theme", "themes", "exit",
-  "ai", "chat",
+  "ai", "chat", "memory", "memories", "forget",
 ]
 
 const STATIC_COMMANDS: Record<string, string[]> = {
@@ -221,6 +300,11 @@ export default function TerminalPage() {
   const fsRef = useRef(new VirtualFS())
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+  const memoriesRef = useRef<Record<string, string>>({})
+
+  useEffect(() => {
+    memoriesRef.current = loadMemories()
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setBootComplete(true), 1500)
@@ -354,7 +438,10 @@ export default function TerminalPage() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({
+          messages: newMessages,
+          memories: memoriesRef.current,
+        }),
       })
 
       if (!response.ok) {
@@ -373,7 +460,8 @@ export default function TerminalPage() {
         const chunk = decoder.decode(value, { stream: true })
         fullResponse += chunk
 
-        const lines = fullResponse.split("\n")
+        const { cleaned } = extractMemoryTags(fullResponse)
+        const lines = cleaned.split("\n")
         setHistory((prev) => {
           const updated = [...prev]
           const lastIdx = updated.length - 1
@@ -386,7 +474,21 @@ export default function TerminalPage() {
         })
       }
 
-      setAiMessages((prev) => [...prev, { role: "model", content: fullResponse }])
+      const { cleaned, newMemories } = extractMemoryTags(fullResponse)
+      if (Object.keys(newMemories).length > 0) {
+        memoriesRef.current = { ...memoriesRef.current, ...newMemories }
+        saveMemories(memoriesRef.current)
+      }
+
+      const finalLines = cleaned.split("\n")
+      setHistory((prev) => {
+        const updated = [...prev]
+        const lastIdx = updated.length - 1
+        updated[lastIdx] = { ...updated[lastIdx], output: finalLines, isAI: true }
+        return updated
+      })
+
+      setAiMessages((prev) => [...prev, { role: "model", content: cleaned }])
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error"
       setHistory((prev) => {
@@ -507,6 +609,8 @@ export default function TerminalPage() {
                 "  [AI CHAT] — Talk to PorfAi",
                 "  ai            Chat with PorfAi",
                 "  chat          Alias for ai",
+                "  memory        Show saved memories",
+                "  forget        Clear all memories",
                 "",
                 "  [CODING] — Yes, you can actually code here!",
                 "  js            Enter JavaScript REPL",
@@ -578,8 +682,8 @@ export default function TerminalPage() {
                 "║  I'm PorfAi — I know about Saptak's work,   ║",
                 "║  but I can answer ANYTHING you ask.          ║",
                 "║                                              ║",
-                "║  I have emotions too! Ask me something fun   ║",
-                "║  and watch my mood change.                   ║",
+                "║  I have emotions and MEMORY! I remember      ║",
+                "║  what you tell me, even after refresh.       ║",
                 "║                                              ║",
                 '║  Type "exit" to leave                        ║',
                 "╚══════════════════════════════════════════════╝",
@@ -587,6 +691,52 @@ export default function TerminalPage() {
             },
           ])
           break
+
+        case "memory":
+        case "memories": {
+          const mems = memoriesRef.current
+          const keys = Object.keys(mems)
+          if (keys.length === 0) {
+            setHistory((prev) => [
+              ...prev,
+              { command: cmd, output: [
+                "(◕─◕) PorfAi has no saved memories yet.",
+                "",
+                "Chat with PorfAi and tell it things to remember!",
+                'Example: "I live in Bolpur, remember that"',
+              ] },
+            ])
+          } else {
+            setHistory((prev) => [
+              ...prev,
+              { command: cmd, output: [
+                "╔══════════════════════════════════════════════╗",
+                "║      (♥‿♥) PorfAi — Saved Memories          ║",
+                "╚══════════════════════════════════════════════╝",
+                "",
+                ...keys.map((k) => `  ${k}: ${mems[k]}`),
+                "",
+                `  Total: ${keys.length} memor${keys.length === 1 ? "y" : "ies"}`,
+                '  Type "forget" to clear all memories.',
+              ] },
+            ])
+          }
+          break
+        }
+
+        case "forget": {
+          memoriesRef.current = {}
+          saveMemories({})
+          setHistory((prev) => [
+            ...prev,
+            { command: cmd, output: [
+              "(◕︵◕) PorfAi: All memories cleared...",
+              "I won't remember anything from before.",
+              "But hey, we can make new memories! 💫",
+            ] },
+          ])
+          break
+        }
 
         case "run":
           if (!rest) {
@@ -1172,50 +1322,66 @@ export default function TerminalPage() {
                 </div>
               )}
               {entry.isAI && entry.output.length > 0 ? (
-                <div className="mt-1">
+                <div className="mt-2 mb-1">
                   {(() => {
                     const mood = extractMood(entry.output)
                     const cleanLines = getCleanOutput(entry.output)
                     const face = MOOD_FACES[mood] || MOOD_FACES.neutral
                     const moodColor = getMoodColor(mood, theme)
+                    const moodAnim = MOOD_ANIMATIONS[mood] || MOOD_ANIMATIONS.neutral
                     return (
                       <>
                         <motion.div
-                          initial={{ scale: 0.5, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                          className="flex items-center gap-2 mb-1"
+                          initial={{ scale: 0, opacity: 0, y: 10 }}
+                          animate={{ scale: 1, opacity: 1, y: 0 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                          className="flex items-center gap-3 mb-2"
                         >
-                          <motion.span
-                            animate={{ y: [0, -2, 0] }}
-                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                            className="font-mono text-sm"
-                            style={{ color: moodColor }}
+                          <motion.div
+                            animate={moodAnim.animate}
+                            transition={moodAnim.transition}
+                            className="flex items-center justify-center rounded-lg px-2 py-1 font-mono"
+                            style={{
+                              color: moodColor,
+                              backgroundColor: `${moodColor}15`,
+                              boxShadow: `0 0 12px ${moodColor}30, 0 0 4px ${moodColor}20`,
+                              fontSize: "18px",
+                            }}
                           >
                             {face}
-                          </motion.span>
-                          <span
-                            className="font-mono text-xs font-bold"
-                            style={{ color: theme.accent }}
-                          >
-                            PorfAi
-                          </span>
-                          <span
-                            className="font-mono"
-                            style={{ color: moodColor, fontSize: "9px" }}
-                          >
-                            {mood}
-                          </span>
+                          </motion.div>
+                          <div className="flex flex-col">
+                            <span
+                              className="font-mono text-xs font-bold"
+                              style={{ color: theme.accent }}
+                            >
+                              PorfAi
+                            </span>
+                            <span
+                              className="font-mono"
+                              style={{ color: moodColor, fontSize: "10px" }}
+                            >
+                              feeling {mood}
+                            </span>
+                          </div>
                         </motion.div>
-                        {cleanLines.map((line, j) => (
-                          <p
-                            key={j}
-                            className="whitespace-pre font-mono pl-7"
-                            style={{ color: theme.primary }}
-                          >
-                            {line || "\u00A0"}
-                          </p>
-                        ))}
+                        <div
+                          className="ml-1 pl-3 border-l-2"
+                          style={{ borderColor: `${moodColor}40` }}
+                        >
+                          {cleanLines.map((line, j) => (
+                            <motion.p
+                              key={j}
+                              initial={{ opacity: 0, x: -5 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: j * 0.03 }}
+                              className="whitespace-pre-wrap break-words font-mono"
+                              style={{ color: theme.primary }}
+                            >
+                              {line || "\u00A0"}
+                            </motion.p>
+                          ))}
+                        </div>
                       </>
                     )
                   })()}
@@ -1252,29 +1418,49 @@ export default function TerminalPage() {
         {/* PorfAi thinking indicator */}
         {aiLoading && (
           <motion.div
-            initial={{ opacity: 0, y: 5 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-3 flex items-center gap-2"
+            className="mb-3 flex items-center gap-3"
           >
-            <motion.span
+            <motion.div
               animate={{
-                rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1],
+                rotate: [0, 15, -15, 0],
+                scale: [1, 1.15, 0.95, 1],
               }}
-              transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-              className="font-mono text-sm"
-              style={{ color: theme.accent }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              className="flex items-center justify-center rounded-lg px-2 py-1 font-mono"
+              style={{
+                color: theme.accent,
+                backgroundColor: `${theme.accent}15`,
+                boxShadow: `0 0 15px ${theme.accent}25`,
+                fontSize: "18px",
+              }}
             >
               {MOOD_FACES.thinking}
-            </motion.span>
-            <motion.span
-              animate={{ opacity: [1, 0.4, 1] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="font-mono text-xs"
-              style={{ color: theme.accent }}
-            >
-              PorfAi is thinking...
-            </motion.span>
+            </motion.div>
+            <div className="flex flex-col">
+              <span className="font-mono text-xs font-bold" style={{ color: theme.accent }}>
+                PorfAi
+              </span>
+              <motion.div className="flex gap-1">
+                {[0, 1, 2].map((dot) => (
+                  <motion.span
+                    key={dot}
+                    animate={{ y: [0, -4, 0], opacity: [0.3, 1, 0.3] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 0.8,
+                      delay: dot * 0.2,
+                      ease: "easeInOut",
+                    }}
+                    className="font-mono"
+                    style={{ color: theme.accent, fontSize: "16px" }}
+                  >
+                    ●
+                  </motion.span>
+                ))}
+              </motion.div>
+            </div>
           </motion.div>
         )}
 
