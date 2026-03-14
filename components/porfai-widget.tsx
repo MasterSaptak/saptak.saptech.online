@@ -301,8 +301,8 @@ export function PorfAiWidget() {
     }
   }, [])
 
-  const sendMessageRef = useRef<(text: string) => void>(() => {})
-  const startListeningRef = useRef<() => void>(() => {})
+  const sendMessageRef = useRef<(text: string) => void>(() => { })
+  const startListeningRef = useRef<() => void>(() => { })
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return
