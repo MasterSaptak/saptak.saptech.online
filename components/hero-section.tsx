@@ -6,6 +6,7 @@ import { ParticleField } from "./particle-field"
 import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "lucide-react"
 import Image from "next/image"
 import { useSignal } from "./signal-context"
+import { PorfAiWidget } from "./porfai-widget"
 
 const roles = [
   "Full-Stack Developer",
@@ -391,9 +392,10 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right: Profile photo */}
-          <div className="flex-shrink-0">
+          {/* Right: Profile photo + PorfAi */}
+          <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <ProfilePhoto />
+            <PorfAiWidget />
           </div>
         </div>
 
