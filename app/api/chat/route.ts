@@ -142,6 +142,40 @@ function detectLiveQuery(message: string): string[] {
   return needs
 }
 
+const rateLimit = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT_WINDOW = 60_000
+const RATE_LIMIT_MAX = 20
+const MAX_MESSAGE_LENGTH = 500
+const MAX_MESSAGES = 20
+const MAX_MEMORY_ENTRIES = 20
+const MAX_MEMORY_VALUE_LENGTH = 200
+
+function getClientIP(req: Request): string {
+  const forwarded = req.headers.get("x-forwarded-for")
+  const real = req.headers.get("x-real-ip")
+  return forwarded?.split(",")[0]?.trim() || real || "unknown"
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false
+  entry.count++
+  return true
+}
+
+function sanitizeText(text: string): string {
+  return text
+    .replace(/\[(?:mood|remember):[^\]]*\]/gi, "")
+    .replace(/\[LIVE DATA[^\]]*\]/gi, "")
+    .replace(/\[USER MEMORIES[^\]]*\]/gi, "")
+    .slice(0, MAX_MESSAGE_LENGTH)
+}
+
 export async function POST(req: Request) {
   const apiKey = process.env.GROQ_API_KEY
 
@@ -152,8 +186,17 @@ export async function POST(req: Request) {
     )
   }
 
+  const clientIP = getClientIP(req)
+  if (!checkRateLimit(clientIP)) {
+    return new Response(
+      JSON.stringify({ error: "Too many requests. Please wait a minute." }),
+      { status: 429, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
   try {
-    const { messages, memories } = await req.json()
+    const body = await req.json()
+    const { messages, memories } = body
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(
@@ -162,16 +205,24 @@ export async function POST(req: Request) {
       )
     }
 
-    const recentMessages = messages.slice(-20)
+    const recentMessages = messages.slice(-MAX_MESSAGES).map(
+      (m: { role: string; content: string }) => ({
+        role: m.role,
+        content: sanitizeText(String(m.content || "")),
+      })
+    )
     const lastMessage = recentMessages[recentMessages.length - 1].content
 
     let extraContext = ""
 
-    if (memories && typeof memories === "object" && Object.keys(memories).length > 0) {
-      const memList = Object.entries(memories)
-        .map(([k, v]) => `- ${k}: ${v}`)
-        .join("\n")
-      extraContext += `\n\n[USER MEMORIES — Things you've been told to remember]\n${memList}\nUse these naturally in conversation when relevant.`
+    if (memories && typeof memories === "object") {
+      const safeMemories = Object.entries(memories).slice(0, MAX_MEMORY_ENTRIES)
+      if (safeMemories.length > 0) {
+        const memList = safeMemories
+          .map(([k, v]) => `- ${String(k).slice(0, 30)}: ${String(v).slice(0, MAX_MEMORY_VALUE_LENGTH)}`)
+          .join("\n")
+        extraContext += `\n\n[USER MEMORIES — Things you've been told to remember]\n${memList}\nUse these naturally in conversation when relevant.`
+      }
     }
 
     const liveNeeds = detectLiveQuery(lastMessage)
@@ -210,9 +261,9 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "llama-3.1-8b-instant",
         messages: groqMessages,
-        max_tokens: 1024,
+        max_tokens: 512,
         temperature: 0.8,
         stream: true,
       }),

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Send, X, MessageSquare } from "lucide-react"
+import { Send, X, MessageSquare, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
 
 const MOOD_FACES: Record<string, string> = {
   happy: "(◕‿◕)",
@@ -146,6 +146,87 @@ interface ChatMessage {
   mood?: string
 }
 
+interface SpeechRecognitionEvent {
+  resultIndex: number
+  results: SpeechRecognitionResultList
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string
+}
+
+let cachedVoice: SpeechSynthesisVoice | null = null
+
+function pickBestVoice(): SpeechSynthesisVoice | null {
+  if (cachedVoice) return cachedVoice
+  const voices = window.speechSynthesis.getVoices()
+  if (!voices.length) return null
+
+  const ranked = [
+    /Microsoft.*Jenny/i,
+    /Microsoft.*Aria/i,
+    /Microsoft.*Sonia/i,
+    /Microsoft.*Libby/i,
+    /Google UK English Female/i,
+    /Google US English/i,
+    /Samantha/i,
+    /Karen/i,
+    /Moira/i,
+    /Tessa/i,
+    /Fiona/i,
+    /Victoria/i,
+    /Microsoft.*Zira/i,
+    /en.*Female/i,
+    /Female/i,
+  ]
+
+  for (const pattern of ranked) {
+    const match = voices.find((v) => pattern.test(v.name))
+    if (match) {
+      cachedVoice = match
+      return match
+    }
+  }
+
+  const englishFemale = voices.find(
+    (v) => v.lang.startsWith("en") && /female|woman/i.test(v.name)
+  )
+  if (englishFemale) {
+    cachedVoice = englishFemale
+    return englishFemale
+  }
+
+  const anyEnglish = voices.find((v) => v.lang.startsWith("en"))
+  if (anyEnglish) cachedVoice = anyEnglish
+  return anyEnglish || null
+}
+
+function speakText(text: string, onStart?: () => void, onEnd?: () => void) {
+  if (typeof window === "undefined" || !window.speechSynthesis) return
+  window.speechSynthesis.cancel()
+  const cleaned = text
+    .replace(/[◕‿︵◑◐★▽■♥─◕]/g, "")
+    .replace(/[\(\)]/g, "")
+    .replace(/\[.*?\]/g, "")
+    .replace(/[*_~`#]/g, "")
+    .replace(/\bhttps?:\/\/\S+/g, "")
+    .trim()
+  if (!cleaned) return
+
+  const utterance = new SpeechSynthesisUtterance(cleaned)
+  const voice = pickBestVoice()
+  if (voice) utterance.voice = voice
+
+  utterance.rate = 1.0
+  utterance.pitch = 1.15
+  utterance.volume = 1.0
+
+  utterance.onstart = () => onStart?.()
+  utterance.onend = () => onEnd?.()
+  utterance.onerror = () => onEnd?.()
+  window.speechSynthesis.speak(utterance)
+}
+
 export function PorfAiWidget() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState("")
@@ -153,12 +234,51 @@ export function PorfAiWidget() {
   const [apiMessages, setApiMessages] = useState<{ role: string; content: string }[]>([])
   const [loading, setLoading] = useState(false)
   const [currentMood, setCurrentMood] = useState("happy")
+  const [listening, setListening] = useState(false)
+  const [speaking, setSpeaking] = useState(false)
+  const [ttsEnabled, setTtsEnabled] = useState(true)
+  const [speechSupported, setSpeechSupported] = useState(false)
+  const [voiceMode, setVoiceMode] = useState(false)
   const memoriesRef = useRef<Record<string, string>>({})
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const recognitionRef = useRef<ReturnType<typeof createRecognition> | null>(null)
+
+  function createRecognition() {
+    const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition ||
+      (window as unknown as Record<string, unknown>).webkitSpeechRecognition
+    if (!SpeechRecognition) return null
+    const recognition = new (SpeechRecognition as new () => {
+      continuous: boolean
+      interimResults: boolean
+      lang: string
+      onresult: ((e: SpeechRecognitionEvent) => void) | null
+      onerror: ((e: SpeechRecognitionErrorEvent) => void) | null
+      onend: (() => void) | null
+      start: () => void
+      stop: () => void
+      abort: () => void
+    })()
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.lang = "en-US"
+    return recognition
+  }
 
   useEffect(() => {
     memoriesRef.current = loadMemories()
+    const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition ||
+      (window as unknown as Record<string, unknown>).webkitSpeechRecognition
+    setSpeechSupported(!!SpeechRecognition)
+
+    const synth = window.speechSynthesis
+    if (synth) {
+      synth.getVoices()
+      synth.onvoiceschanged = () => {
+        cachedVoice = null
+        pickBestVoice()
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -173,6 +293,16 @@ export function PorfAiWidget() {
       setTimeout(() => inputRef.current?.focus(), 300)
     }
   }, [open])
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort()
+      window.speechSynthesis?.cancel()
+    }
+  }, [])
+
+  const sendMessageRef = useRef<(text: string) => void>(() => {})
+  const startListeningRef = useRef<() => void>(() => {})
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return
@@ -243,6 +373,21 @@ export function PorfAiWidget() {
         return updated
       })
       setApiMessages((prev) => [...prev, { role: "model", content: cleaned }])
+
+      if (ttsEnabled) {
+        speakText(
+          finalDisplay,
+          () => setSpeaking(true),
+          () => {
+            setSpeaking(false)
+            if (voiceMode) {
+              setTimeout(() => startListeningRef.current(), 400)
+            }
+          }
+        )
+      } else if (voiceMode) {
+        setTimeout(() => startListeningRef.current(), 400)
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error"
       setMessages((prev) => [...prev, { role: "model", content: msg, mood: "sad" }])
@@ -250,7 +395,54 @@ export function PorfAiWidget() {
     } finally {
       setLoading(false)
     }
-  }, [apiMessages, loading])
+  }, [apiMessages, loading, ttsEnabled, voiceMode])
+
+  sendMessageRef.current = sendMessage
+
+  const startListening = useCallback(() => {
+    if (loading || listening) return
+    const recognition = createRecognition()
+    if (!recognition) return
+    recognitionRef.current = recognition
+    let finalTranscript = ""
+
+    recognition.onresult = (e: SpeechRecognitionEvent) => {
+      let interim = ""
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript
+        if (e.results[i].isFinal) {
+          finalTranscript += transcript
+        } else {
+          interim = transcript
+        }
+      }
+      setInput(finalTranscript || interim)
+    }
+
+    recognition.onerror = () => {
+      setListening(false)
+      recognitionRef.current = null
+    }
+
+    recognition.onend = () => {
+      setListening(false)
+      recognitionRef.current = null
+      if (finalTranscript.trim()) {
+        setInput("")
+        sendMessageRef.current(finalTranscript.trim())
+      }
+    }
+
+    setListening(true)
+    recognition.start()
+  }, [loading, listening])
+
+  const stopListening = useCallback(() => {
+    recognitionRef.current?.stop()
+    setVoiceMode(false)
+  }, [])
+
+  startListeningRef.current = startListening
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -259,7 +451,7 @@ export function PorfAiWidget() {
 
   const moodColor = MOOD_COLORS[currentMood] || MOOD_COLORS.neutral
   const moodFace = MOOD_FACES[currentMood] || MOOD_FACES.neutral
-  const waveState = loading ? "speaking" as const : open ? "listening" as const : "idle" as const
+  const waveState = speaking ? "speaking" as const : listening ? "listening" as const : loading ? "speaking" as const : "idle" as const
 
   return (
     <div className="relative">
@@ -354,7 +546,14 @@ export function PorfAiWidget() {
                 </span>
               </div>
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false)
+                  recognitionRef.current?.abort()
+                  window.speechSynthesis?.cancel()
+                  setListening(false)
+                  setSpeaking(false)
+                  setVoiceMode(false)
+                }}
                 className="p-1 rounded-lg hover:bg-white/5 transition-colors"
               >
                 <X className="w-3.5 h-3.5 text-white/40 hover:text-white/70" />
@@ -367,16 +566,16 @@ export function PorfAiWidget() {
               style={{ borderColor: `${moodColor}10` }}
             >
               <div className="relative z-10 flex-1">
-                <VoiceWaveform active={waveState} color={moodColor} />
+                <VoiceWaveform active={waveState} color={listening ? "#ff6b6b" : moodColor} />
               </div>
-              {loading && (
+              {(loading || listening || speaking) && (
                 <motion.span
                   className="text-[9px] font-mono shrink-0"
-                  style={{ color: `${moodColor}80` }}
+                  style={{ color: listening ? "#ff6b6b" : `${moodColor}80` }}
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  thinking...
+                  {listening ? "listening..." : speaking ? "speaking..." : "thinking..."}
                 </motion.span>
               )}
             </div>
@@ -457,29 +656,81 @@ export function PorfAiWidget() {
             {/* Input */}
             <form
               onSubmit={handleSubmit}
-              className="flex items-center gap-2 px-3 py-2 border-t"
+              className="flex items-center gap-1.5 px-3 py-2 border-t"
               style={{ borderColor: `${moodColor}15` }}
             >
+              {/* TTS toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (speaking) window.speechSynthesis?.cancel()
+                  setTtsEnabled((v) => !v)
+                  setSpeaking(false)
+                }}
+                className="p-1.5 rounded-lg transition-colors shrink-0"
+                style={{ color: ttsEnabled ? moodColor : "rgba(255,255,255,0.2)" }}
+                title={ttsEnabled ? "Voice on" : "Voice off"}
+              >
+                {ttsEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
+
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask anything..."
-                disabled={loading}
-                className="flex-1 bg-transparent text-xs text-white/90 placeholder:text-white/20 outline-none font-mono"
+                placeholder={listening ? "Listening..." : voiceMode ? "Voice mode · tap mic to stop" : "Ask anything..."}
+                disabled={loading || listening}
+                className="flex-1 bg-transparent text-xs text-white/90 placeholder:text-white/20 outline-none font-mono min-w-0"
               />
+
+              {/* Mic button */}
+              {speechSupported && (
+                <motion.button
+                  type="button"
+                  onClick={() => {
+                    if (listening) {
+                      stopListening()
+                    } else {
+                      setVoiceMode(true)
+                      startListening()
+                    }
+                  }}
+                  disabled={loading}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-1.5 rounded-lg transition-colors shrink-0 disabled:opacity-30"
+                  style={{
+                    background: listening ? `${moodColor}30` : `${moodColor}10`,
+                    color: listening ? moodColor : `${moodColor}aa`,
+                    boxShadow: listening ? `0 0 12px ${moodColor}40` : "none",
+                  }}
+                  title={listening ? "Stop listening" : "Voice input"}
+                >
+                  {listening ? (
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                    >
+                      <MicOff className="w-3.5 h-3.5" />
+                    </motion.div>
+                  ) : (
+                    <Mic className="w-3.5 h-3.5" />
+                  )}
+                </motion.button>
+              )}
+
+              {/* Send button */}
               <motion.button
                 type="submit"
-                disabled={loading || !input.trim()}
+                disabled={loading || !input.trim() || listening}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-2 rounded-lg transition-colors disabled:opacity-30"
+                className="p-1.5 rounded-lg transition-colors disabled:opacity-30 shrink-0"
                 style={{
                   background: `${moodColor}15`,
                   color: moodColor,
                 }}
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" />
               </motion.button>
             </form>
           </motion.div>
