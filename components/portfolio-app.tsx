@@ -1,5 +1,6 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Navigation } from "@/components/navigation"
@@ -16,11 +17,24 @@ import { SkillsSection } from "@/components/skills-section"
 import { EntrepreneurshipSection } from "@/components/entrepreneurship-section"
 import { GameDevSection } from "@/components/game-dev-section"
 import { ModeProvider, useMode } from "@/components/mode-context"
-import { CircuitBackground } from "@/components/circuit-background"
-import { ScannerBeam } from "@/components/scanner-beam"
-import { DataStream } from "@/components/data-stream"
 import { SignalProvider } from "@/components/signal-context"
-import { SignalOverlay } from "@/components/signal-overlay"
+
+const CircuitBackground = dynamic(
+  () => import("@/components/circuit-background").then(m => ({ default: m.CircuitBackground })),
+  { ssr: false }
+)
+const ScannerBeam = dynamic(
+  () => import("@/components/scanner-beam").then(m => ({ default: m.ScannerBeam })),
+  { ssr: false }
+)
+const DataStream = dynamic(
+  () => import("@/components/data-stream").then(m => ({ default: m.DataStream })),
+  { ssr: false }
+)
+const SignalOverlay = dynamic(
+  () => import("@/components/signal-overlay").then(m => ({ default: m.SignalOverlay })),
+  { ssr: false }
+)
 
 function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-green" }) {
   const ref = useRef<HTMLDivElement>(null)

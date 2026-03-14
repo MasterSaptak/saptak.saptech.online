@@ -54,12 +54,14 @@ export function CircuitBackground() {
             nodes = []
             edges = []
 
-            // Create a grid of potential nodes with some randomness
-            const cols = Math.floor(w / 120)
-            const rows = Math.floor(h / 120)
+            const isMobileGen = w < 768
+            const spacing = isMobileGen ? 180 : 120
+            const skipChance = isMobileGen ? 0.6 : 0.4
+            const cols = Math.floor(w / spacing)
+            const rows = Math.floor(h / spacing)
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    if (Math.random() > 0.4) {
+                    if (Math.random() > skipChance) {
                         nodes.push({
                             x: (c + 0.5) * (w / cols) + (Math.random() - 0.5) * 40,
                             y: (r + 0.5) * (h / rows) + (Math.random() - 0.5) * 40,
@@ -89,10 +91,20 @@ export function CircuitBackground() {
             }
         }
 
+        const isMobile = w < 768
         let lastTime = 0
+        let lastFrame = 0
+        const targetInterval = isMobile ? 50 : 16
+
         const draw = (time: number) => {
             const dt = lastTime ? time - lastTime : 16
             lastTime = time
+
+            if (time - lastFrame < targetInterval) {
+                animId = requestAnimationFrame(draw)
+                return
+            }
+            lastFrame = time
 
             ctx.clearRect(0, 0, w, h)
 

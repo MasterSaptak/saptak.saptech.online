@@ -259,7 +259,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg scanlines"
+      className="relative min-h-screen flex items-start md:items-center justify-center overflow-hidden grid-bg scanlines"
     >
       <ParticleField />
 
@@ -306,7 +306,7 @@ export function HeroSection() {
         </span>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:py-20">
         {/* Main hero layout: text left, photo right */}
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
           {/* Left: Text content */}
