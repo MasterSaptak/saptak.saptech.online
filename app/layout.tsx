@@ -81,12 +81,10 @@ export const metadata: Metadata = {
   },
 }
 
-export function generateViewport(): Viewport {
-  return {
-    themeColor: '#0a0a0f',
-    width: 'device-width',
-    initialScale: 1,
-  }
+export const viewport: Viewport = {
+  themeColor: '#0a0a0f',
+  width: 'device-width',
+  initialScale: 1,
 }
 
 const jsonLd = {

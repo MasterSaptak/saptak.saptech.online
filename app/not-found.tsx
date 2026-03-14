@@ -8,12 +8,10 @@ export const metadata: Metadata = {
   description: 'The system could not locate the requested resource.',
 }
 
-export function generateViewport(): Viewport {
-  return {
-    themeColor: '#0a0a0f',
-    width: 'device-width',
-    initialScale: 1,
-  }
+export const viewport: Viewport = {
+  themeColor: '#0a0a0f',
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function NotFound() {
