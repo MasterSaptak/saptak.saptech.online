@@ -17,7 +17,7 @@ export function GlitchText({
     as?: "h1" | "h2" | "h3" | "span"
 }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-80px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
     const [displayText, setDisplayText] = useState(children)
     const [isDecoding, setIsDecoding] = useState(false)
 
@@ -90,7 +90,7 @@ export function RoboReveal({
     direction?: "up" | "left" | "right"
 }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-60px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
 
     const initial = {
         opacity: 0,
@@ -142,7 +142,7 @@ export function RoboReveal({
  */
 export function SystemStatus({ message, color = "blue" }: { message: string; color?: "blue" | "green" }) {
     const ref = useRef<HTMLDivElement>(null)
-    const isInView = useInView(ref, { once: true, margin: "-40px" })
+    const isInView = useInView(ref, { once: true, margin: "-10px" })
     const [text, setText] = useState("")
 
     useEffect(() => {
@@ -171,6 +171,94 @@ export function SystemStatus({ message, color = "blue" }: { message: string; col
         </div>
     )
 }
+
+/**
+ * Floating live telemetry status component.
+ */
+export function FloatingStatus({ 
+    label, 
+    value, 
+    color = "blue",
+    className = "" 
+}: { 
+    label: string; 
+    value: string; 
+    color?: "blue" | "green";
+    className?: string;
+}) {
+    const neonBg = color === "blue" ? "bg-neon-blue/10" : "bg-neon-green/10"
+    const neonText = color === "blue" ? "text-neon-blue" : "text-neon-green"
+    const neonBorder = color === "blue" ? "border-neon-blue/30" : "border-neon-green/30"
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={`flex items-center gap-3 px-3 py-1.5 rounded border ${neonBg} ${neonBorder} ${className}`}
+        >
+            <div className="flex flex-col">
+                <span className="text-[7px] font-mono opacity-50 uppercase tracking-tighter">{label}</span>
+                <span className={`text-[10px] font-mono font-bold ${neonText} telemetry-value`}>{value}</span>
+            </div>
+            <div className="flex gap-0.5">
+                {[1, 2, 3].map((i) => (
+                    <motion.div 
+                        key={i}
+                        animate={{ height: ["20%", "70%", "20%"] }}
+                        transition={{ duration: 0.8, delay: i * 0.1, repeat: Infinity }}
+                        className={`w-0.5 ${color === "blue" ? "bg-neon-blue" : "bg-neon-green"}`}
+                    />
+                ))}
+            </div>
+        </motion.div>
+    )
+}
+
+/**
+ * Decrypt effect for small UI labels or numbers.
+ */
+export function DecryptEffect({ 
+    children, 
+    iterations = 10, 
+    speed = 40 
+}: { 
+    children: string; 
+    iterations?: number;
+    speed?: number;
+}) {
+    const [text, setText] = useState("")
+    const [isComplete, setIsComplete] = useState(false)
+    const ref = useRef<HTMLDivElement>(null)
+    const isInView = useInView(ref, { once: true })
+
+    useEffect(() => {
+        if (!isInView || isComplete) return
+
+        let iteration = 0
+        const interval = setInterval(() => {
+            setText(
+                children
+                    .split("")
+                    .map((char, index) => {
+                        if (index < iteration) return children[index]
+                        return "0123456789ABCDEF"[Math.floor(Math.random() * 16)]
+                    })
+                    .join("")
+            )
+
+            if (iteration >= children.length) {
+                clearInterval(interval)
+                setIsComplete(true)
+            }
+            iteration += children.length / iterations
+        }, speed)
+
+        return () => clearInterval(interval)
+    }, [isInView, children, iterations, speed, isComplete])
+
+    return <span ref={ref} className="font-mono">{isComplete ? children : text}</span>
+}
+
 
 /**
  * Corner brackets decoration — adds tech-style corner brackets to any container.

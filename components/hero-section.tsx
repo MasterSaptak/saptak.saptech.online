@@ -5,20 +5,22 @@ import { motion } from "framer-motion"
 import { ParticleField } from "./particle-field"
 import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "lucide-react"
 import Image from "next/image"
+import { useSignal } from "./signal-context"
+import { PorfAiWidget } from "./porfai-widget"
 
 const roles = [
-  "Fullstack Developer",
-  "Cyber Security",
-  "Robotics & IoT",
+  "Full-Stack Developer",
+  "AI Engineer",
+  "IoT/Robotics Enthusiast",
+  "Cybersecurity Learner",
   "Startup Founder",
-  "Businessman",
 ]
 
 const stats = [
-  { label: "Ventures Built", value: "5+", icon: Terminal },
-  { label: "Systems Developed", value: "10+", icon: FileCode },
-  { label: "Founder Since", value: "18", icon: Shield },
-  { label: "Research Paper", value: "1", icon: Bot },
+  { label: "Ventures Launched", value: "5+", icon: Terminal },
+  { label: "AI Systems", value: "3+", icon: Bot },
+  { label: "IoT Nodes", value: "50+", icon: FileCode },
+  { label: "System Uptime", value: "99%", icon: Shield },
 ]
 
 function TypewriterText() {
@@ -57,8 +59,13 @@ function TypewriterText() {
 }
 
 function AnimatedCounter({ value, label, icon: Icon, delay }: { value: string; label: string; icon: React.ElementType; delay: number }) {
+  const { emitSignal } = useSignal()
   const [count, setCount] = useState(0)
   const numericValue = parseInt(value.replace("+", ""))
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    emitSignal(e.clientX, e.clientY, "blue")
+  }
 
   useEffect(() => {
     let start = 0
@@ -76,6 +83,7 @@ function AnimatedCounter({ value, label, icon: Icon, delay }: { value: string; l
     <motion.div
       initial={{ opacity: 0, y: 25, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
+      onMouseEnter={handleMouseEnter}
       transition={{ duration: 0.6, delay }}
       className="glass-card rounded-xl p-4 lg:p-6 flex flex-col items-center gap-2 hover-elevate"
     >
@@ -252,7 +260,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg scanlines"
+      className="relative min-h-screen flex items-start md:items-center justify-center overflow-hidden grid-bg scanlines"
     >
       <ParticleField />
 
@@ -299,7 +307,7 @@ export function HeroSection() {
         </span>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:py-20">
         {/* Main hero layout: text left, photo right */}
         <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
           {/* Left: Text content */}
@@ -322,9 +330,9 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-4 text-balance"
+              className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight text-foreground mb-4 text-balance leading-[0.9]"
             >
-              Saptak Roy Akash
+              Saptak <span className="text-stroke-neon block lg:inline">Roy Akash</span>
             </motion.h1>
 
             {/* Typing Role */}
@@ -344,7 +352,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="text-muted-foreground text-base lg:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed"
             >
-              Building scalable fullstack applications, exploring the frontiers of IoT & Cyber Security, and driving business innovation through tech startups.
+              Building real-world intelligent systems integrating sensors, embedded microcontrollers, cloud services, and machine learning models for healthcare, sustainability, and community safety.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -384,9 +392,10 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right: Profile photo */}
-          <div className="flex-shrink-0">
+          {/* Right: Profile photo + PorfAi */}
+          <div className="flex-shrink-0 flex flex-col items-center gap-4">
             <ProfilePhoto />
+            <PorfAiWidget />
           </div>
         </div>
 

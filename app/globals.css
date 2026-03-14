@@ -105,6 +105,14 @@ html {
   background: #00e5ff33;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ===== GLOW EFFECTS ===== */
 .glow-blue {
   box-shadow: 0 0 15px rgba(0, 229, 255, 0.15), 0 0 30px rgba(0, 229, 255, 0.05);
@@ -593,6 +601,18 @@ body {
   animation: packet-flow 4s linear infinite;
   animation-delay: 2s;
   will-change: transform;
+}
+
+/* ===== TEXT STROKE NEON ===== */
+.text-stroke-neon {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 229, 255, 0.4);
+  transition: -webkit-text-stroke 0.5s ease;
+}
+
+.text-stroke-neon:hover {
+  -webkit-text-stroke: 1px rgba(0, 229, 255, 0.8);
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
 }
 
 /* ===== PROJECT CARD HOVER ===== */

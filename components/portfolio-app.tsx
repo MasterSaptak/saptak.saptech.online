@@ -1,5 +1,6 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { motion, AnimatePresence, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Navigation } from "@/components/navigation"
@@ -12,14 +13,32 @@ import { ResearchSection } from "@/components/research-section"
 import { CurrentResearchFocus } from "@/components/current-research-focus"
 import { Footer } from "@/components/footer"
 import { SystemsAssistant } from "@/components/systems-assistant"
+import { SkillsSection } from "@/components/skills-section"
+import { EntrepreneurshipSection } from "@/components/entrepreneurship-section"
+import { GameDevSection } from "@/components/game-dev-section"
 import { ModeProvider, useMode } from "@/components/mode-context"
-import { CircuitBackground } from "@/components/circuit-background"
-import { ScannerBeam } from "@/components/scanner-beam"
-import { DataStream } from "@/components/data-stream"
+import { SignalProvider } from "@/components/signal-context"
+
+const CircuitBackground = dynamic(
+  () => import("@/components/circuit-background").then(m => ({ default: m.CircuitBackground })),
+  { ssr: false }
+)
+const ScannerBeam = dynamic(
+  () => import("@/components/scanner-beam").then(m => ({ default: m.ScannerBeam })),
+  { ssr: false }
+)
+const DataStream = dynamic(
+  () => import("@/components/data-stream").then(m => ({ default: m.DataStream })),
+  { ssr: false }
+)
+const SignalOverlay = dynamic(
+  () => import("@/components/signal-overlay").then(m => ({ default: m.SignalOverlay })),
+  { ssr: false }
+)
 
 function SectionDivider({ color = "neon-blue" }: { color?: "neon-blue" | "neon-green" }) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: "-40px" })
+  const isInView = useInView(ref, { once: true, margin: "-10px" })
 
   return (
     <div ref={ref} className="relative py-2" aria-hidden="true">
@@ -62,9 +81,11 @@ function PortfolioContent() {
       >
         <HeroSection />
 
-        {/* Design Philosophy - always visible below Hero */}
+        {/* Design Philosophy & Skills - always visible below Hero */}
         <SectionDivider color="neon-blue" />
         <DesignPhilosophy />
+        <SectionDivider color="neon-green" />
+        <SkillsSection />
 
         <AnimatePresence mode="wait">
           {mode === "founder" ? (
@@ -76,7 +97,11 @@ function PortfolioContent() {
               transition={{ duration: 0.4 }}
             >
               <SectionDivider color="neon-blue" />
+              <EntrepreneurshipSection />
+              <SectionDivider color="neon-green" />
               <SystemsSection />
+              <SectionDivider color="neon-blue" />
+              <GameDevSection />
               <SectionDivider color="neon-green" />
               <RoboticsSection />
               <SectionDivider color="neon-blue" />
@@ -86,7 +111,7 @@ function PortfolioContent() {
               <SectionDivider color="neon-blue" />
               <CurrentResearchFocus />
             </motion.div>
-          ) : (
+          ) : mode === "research" ? (
             <motion.div
               key="research"
               initial={{ opacity: 0 }}
@@ -101,7 +126,35 @@ function PortfolioContent() {
               <SectionDivider color="neon-green" />
               <SystemsSection />
               <SectionDivider color="neon-blue" />
+              <GameDevSection />
+              <SectionDivider color="neon-green" />
               <RoboticsSection />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="game-dev"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="relative"
+            >
+              {/* Game Engine Grid Overlay - specific to this mode */}
+              <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+              
+              <SectionDivider color="neon-blue" />
+              <div className="px-6 py-4 border-l-2 border-purple-500/30 ml-4 mb-8">
+                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-[0.2em]">Engine_Core_Initialized</span>
+                <h2 className="text-2xl font-bold text-foreground mt-1">Technical Game Design</h2>
+              </div>
+
+              <GameDevSection />
+              <SectionDivider color="neon-green" />
+              <SystemsSection />
+              <SectionDivider color="neon-blue" />
+              <RoboticsSection />
+              <SectionDivider color="neon-green" />
+              <TimelineSection />
             </motion.div>
           )}
         </AnimatePresence>
@@ -125,12 +178,58 @@ function PortfolioContent() {
       {/* Animated background grid overlay */}
       <div className="animated-grid-overlay" aria-hidden="true" />
 
-      {/* Subtle full-page scanline overlay */}
+      {/* Mode-specific background overlays */}
+      <AnimatePresence>
+        {mode === "research" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_70%_30%,rgba(57,255,20,0.03)_0%,transparent_50%)]"
+          />
+        )}
+        {mode === "game-dev" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_70%_30%,rgba(168,85,247,0.05)_0%,transparent_50%)]"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Persistent Crosshair for Game Dev Mode */}
+      <AnimatePresence>
+        {mode === "game-dev" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 1.2 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center opacity-30"
+          >
+            <div className="w-8 h-8 relative">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-2 bg-purple-400" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-2 bg-purple-400" />
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-px bg-purple-400" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-px bg-purple-400" />
+              <div className="absolute inset-0 border border-purple-400/20 rounded-full" />
+            </div>
+            {/* Aspect Ratio Markers */}
+            <div className="absolute top-8 left-8 text-[8px] font-mono text-purple-400 tracking-tighter">16:9_ENGINE_VIEW</div>
+            <div className="absolute bottom-8 right-8 text-[8px] font-mono text-purple-400 tracking-tighter">DEBUG_V1.0.4</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div
-        className="pointer-events-none fixed inset-0 z-[60] opacity-[0.012]"
+        className="pointer-events-none fixed inset-0 z-[60] opacity-[0.015]"
         aria-hidden="true"
         style={{
-          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)",
+          background: mode === "research"
+            ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57,255,20,0.08) 2px, rgba(57,255,20,0.08) 4px)"
+            : mode === "game-dev"
+            ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168,85,247,0.1) 2px, rgba(168,85,247,0.1) 4px)"
+            : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)",
         }}
       />
     </>
@@ -140,9 +239,12 @@ function PortfolioContent() {
 export function PortfolioApp() {
   return (
     <ModeProvider>
-      <main className="relative bg-background min-h-screen">
-        <PortfolioContent />
-      </main>
+      <SignalProvider>
+        <main className="relative bg-background min-h-screen overflow-x-hidden w-full">
+          <PortfolioContent />
+          <SignalOverlay />
+        </main>
+      </SignalProvider>
     </ModeProvider>
   )
 }

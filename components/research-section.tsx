@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { BookOpen, Database, FlaskConical, BarChart3 } from "lucide-react"
+import { BookOpen, Database, FlaskConical, BarChart3, ExternalLink } from "lucide-react"
 
 const pipelineStagger = {
   hidden: {},
@@ -97,9 +97,9 @@ export function ResearchSection() {
           </div>
 
           <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
-            A deep learning-based system for early detection and classification of potato plant diseases.
-            Leveraging convolutional neural networks trained on field-collected datasets to enable
-            precision agriculture at scale.
+            A deep learning-based framework for automated detection and classification of potato plant diseases.
+            Tested CNN architectures including VGG16, VGG19, DenseNet201, MobileNetV2, ResNet50, and EfficientNetB3,
+            with EfficientNetB3 achieving 99.82% classification accuracy demonstrating strong potential for precision agriculture.
           </p>
 
           {/* Research Pipeline with stagger */}
@@ -107,29 +107,29 @@ export function ResearchSection() {
             variants={pipelineStagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: "-10px" }}
             className="grid md:grid-cols-4 gap-4"
           >
             {[
               {
                 icon: Database,
                 title: "Dataset Collection",
-                desc: "Field-collected images of potato leaves across multiple disease categories and healthy specimens.",
+                desc: "Images of potato leaves across multiple disease categories.",
               },
               {
                 icon: FlaskConical,
-                title: "Model Architecture",
-                desc: "CNN-based deep learning pipeline with transfer learning for optimized accuracy on limited data.",
+                title: "Model Architectures",
+                desc: "Evaluated VGG16, VGG19, DenseNet201, MobileNetV2, ResNet50, and EfficientNetB3.",
               },
               {
                 icon: BarChart3,
-                title: "Training Workflow",
-                desc: "Data augmentation, cross-validation, and hyperparameter optimization for robust model performance.",
+                title: "Evaluation Metrics",
+                desc: "Achieved 98.97% precision, 99.72% recall, and 99.37% F1-score with EfficientNetB3.",
               },
               {
                 icon: BookOpen,
                 title: "Publication",
-                desc: "Accepted for presentation at the International Conference on Data Science and Intelligent Systems 2025.",
+                desc: "Accepted for presentation at the International Conference on Data Science and Intelligent Systems (ICDSIS) 2025.",
               },
             ].map((step) => (
               <motion.div
@@ -146,6 +146,25 @@ export function ResearchSection() {
                 </p>
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* Publication Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-10 flex justify-center md:justify-start"
+          >
+            <a
+              href="https://ieeexplore.ieee.org/document/11070388"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-neon-green/30 bg-neon-green/5 text-neon-green font-mono text-sm hover:bg-neon-green/20 hover:border-neon-green shadow-lg hover:shadow-[0_0_20px_rgba(57,255,20,0.2)] transition-all duration-300 group"
+            >
+              <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              View Full Publication [IEEE Xplore]
+            </a>
           </motion.div>
         </motion.div>
 
