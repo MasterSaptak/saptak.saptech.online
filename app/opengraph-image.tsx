@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og'
+import type { Viewport } from 'next'
 
 export const runtime = 'edge'
 
@@ -9,6 +10,14 @@ export const size = {
 }
 
 export const contentType = 'image/png'
+
+export function generateViewport(): Viewport {
+    return {
+        themeColor: '#001a00',
+        width: 'device-width',
+        initialScale: 1,
+    }
+}
 
 export default async function Image() {
     return new ImageResponse(

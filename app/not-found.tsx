@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import type { Metadata, Viewport } from 'next'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: '404 - Page Not Found',
   description: 'The system could not locate the requested resource.',
