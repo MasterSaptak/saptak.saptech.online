@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/next'
@@ -79,10 +79,12 @@ export const metadata: Metadata = {
   },
 }
 
-export const viewport = {
-  themeColor: '#0a0a0f',
-  width: 'device-width',
-  initialScale: 1,
+export function generateViewport(): Viewport {
+  return {
+    themeColor: '#0a0a0f',
+    width: 'device-width',
+    initialScale: 1,
+  }
 }
 
 const jsonLd = {
