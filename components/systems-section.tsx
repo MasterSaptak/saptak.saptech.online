@@ -2,30 +2,115 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import { Shield, Wifi, Brain, Lock, CreditCard, Globe, Github, ExternalLink, Cpu, Layout } from "lucide-react"
+import {
+  Shield,
+  Wifi,
+  Brain,
+  Lock,
+  CreditCard,
+  Globe,
+  Github,
+  ExternalLink,
+  Sparkles,
+} from "lucide-react"
 import Image from "next/image"
 import { HardwareBlueprint } from "./hardware-blueprint"
 import { useSignal } from "./signal-context"
 import { DecryptEffect } from "./tech-animations"
 
-const systems = [
+const projects = [
   {
     title: "SepsisAlert",
-    problem: "AI-powered early sepsis detection system prioritizing real-time monitoring and medical data streaming via AWS IoT.",
-    tech: ["Machine Learning", "AWS IoT", "MIMIC-IV dataset", "Sensors"],
-    security: "Secure transmission of patient data (heart rate, SpO2, temperature) in real-time",
-    scale: "Designed for rural healthcare workers with cloud connectivity",
+    year: "2025",
+    status: "Shipped",
+    tagline: "AI Healthcare Monitoring System",
+    problem:
+      "AI-powered early sepsis screening system designed for rural healthcare workers with real-time vitals monitoring and cloud analytics.",
+    details: [
+      "Integrated sensors: heart rate, SpO2, and temperature for real-time patient monitoring.",
+      "Streamed medical telemetry using AWS IoT infrastructure for real-time analytics.",
+      "Applied ML models trained on the MIMIC-IV clinical dataset for risk prediction.",
+    ],
+    tech: ["AWS IoT", "Machine Learning", "MIMIC-IV", "Sensors"],
     color: "neon-blue" as const,
-    image: "/images/project-wepeople.png", // Reusing image placeholder
+    image: "/images/project-wepeople.png",
+    github: "#",
+    live: "#",
+  },
+  {
+    title: "We People",
+    year: "2025",
+    status: "In Progress",
+    tagline: "Humanitarian Safety Platform",
+    problem:
+      "A community-driven safety platform focused on emergency response and public safety.",
+    details: [
+      "Supports SOS alerts, location sharing, and nearby assistance discovery.",
+      "Designed for fast incident reporting and community-driven coordination.",
+    ],
+    tech: ["Realtime", "Location", "Safety", "Community"],
+    color: "neon-green" as const,
+    image: "/images/project-wepeople.png",
+    github: "#",
+    live: "#",
+  },
+  {
+    title: "RBSAPS Cipher",
+    year: "2023–Present",
+    status: "Ongoing",
+    tagline: "Cryptosystem Development",
+    problem:
+      "A cryptographic system that generates multiple ciphertext outputs for a single plaintext, exploring high-entropy randomization paths.",
+    details: ["Designed a cryptosystem generating multiple ciphertext outputs for a single plaintext."],
+    tech: ["Cryptography", "Entropy", "Security"],
+    color: "neon-blue" as const,
+    image: "/images/project-cipher.png",
+    github: "#",
+  },
+  {
+    title: "Quiz App",
+    year: "2022–Present",
+    status: "Ongoing",
+    tagline: "Authentication-based Quiz Platform",
+    problem:
+      "A lightweight, authentication-based quiz platform built for reliability and speed.",
+    details: ["Developed an authentication-based quiz platform using HTML, CSS, and JavaScript."],
+    tech: ["HTML", "CSS", "JavaScript", "Auth"],
+    color: "neon-green" as const,
+    image: "/images/project-wepeople.png",
+    github: "#",
+  },
+  {
+    title: "WashOut (Dhopa)",
+    year: "2023–Present",
+    status: "Ongoing",
+    tagline: "Full-Stack Laundry Platform",
+    problem:
+      "An online laundry booking platform with a modern web experience and scalable backend.",
+    details: ["Built an online laundry booking platform using React, Node.js, Express, and MongoDB."],
+    tech: ["React", "Node.js", "Express", "MongoDB"],
+    color: "neon-blue" as const,
+    image: "/images/project-dhopa.png",
     github: "#",
     live: "#",
   },
   {
     title: "IOBOTANICA",
-    problem: "IoT-based smart gardening system to automate plant care and enable real-time environmental monitoring.",
-    tech: ["ESP8266 NodeMCU", "Blynk IoT", "Sensors", "Relay Control"],
-    security: "Standalone operation with 18650 lithium battery system and secure remote commands",
-    scale: "Automated irrigation and tracking based on soil moisture thresholds",
+    year: "2023–Present",
+    status: "Ongoing",
+    tagline: "Smart Agri‑Tech Platform (AI + IoT)",
+    problem:
+      "AI + IoT powered intelligent plant ecosystem with predictive watering, health scoring, and vision-based growth tracking.",
+    details: [
+      "Predictive watering intelligence using Weather API + soil trends (e.g., “Next watering in 6 hours”).",
+      "Mobile app dashboard (not basic Blynk): plant health score, water usage analytics, growth tracking charts.",
+      "Smart alerts: plant stress, optimal growth windows, water tank low, sensor anomalies.",
+      "Camera + AI vision: detect leaf diseases and track growth via images (future scope → core feature).",
+      "SaaS + hardware combo: sell the kit (ESP8266 + sensors + pump) + subscription for AI insights.",
+      "Hardware: ESP8266 NodeMCU with soil moisture, DHT11, PIR; relay-controlled pump; 16x2 LCD; portable 18650 power.",
+      "Developed under the supervision of Dr. Gaurav Barnwal.",
+    ],
+    tech: ["ESP8266", "Sensors", "Weather API", "Predictive AI", "Mobile Dashboard", "SaaS"],
     color: "neon-green" as const,
     image: "/images/project-iobotanica.png",
     github: "#",
@@ -33,24 +118,23 @@ const systems = [
   },
   {
     title: "GLAMORA",
-    problem: "AI-powered hairstyle recommendation and barber booking platform with real-time face shape detection.",
-    tech: ["Python", "PyTorch", "OpenCV", "Next.js"],
-    security: "Secure user authentication and booking workflows with automated confirmations",
-    scale: "Combining AI inference with full-stack web development for seamless user experience",
+    year: "Ongoing",
+    status: "In Progress",
+    tagline: "AI Beauty Platform (Stylist + Bookings)",
+    problem:
+      "Your personal AI stylist: AR try-on, confidence scoring, social virality, and a creator economy for stylists — all inside a premium booking flow.",
+    details: [
+      "Live AR hairstyle try‑on: real-time preview on face via camera (not just static recommendations).",
+      "AI confidence score (e.g., “This style suits you 92%”) + explainable reasons.",
+      "Social + viral layer: share previews, “rate my look”, trend discovery.",
+      "Creator economy: stylists upload looks, earn from bookings, and build a following.",
+      "Expand beyond hair: beard styles, makeup suggestions, skin analysis.",
+      "Tech stack: Python + PyTorch + OpenCV for CV inference; Next.js frontend; auth, dashboards, booking, email confirmations.",
+    ],
+    tech: ["Computer Vision", "AR Try‑On", "Python", "PyTorch", "OpenCV", "Next.js", "Booking"],
     color: "neon-blue" as const,
-    image: "/images/project-cipher.png", // Reusing image placeholder
+    image: "/images/project-cipher.png",
     github: "#",
-  },
-  {
-    title: "Dhopa",
-    problem: "On-demand laundry platform with dynamic pricing engines and intelligent business analytics.",
-    tech: ["React Native", "Node.js", "MongoDB", "AWS"],
-    security: "Operations-First design for high-volume, low-margin environments",
-    scale: "Microservice architecture for independent scaling of order, payment, and logistics modules",
-    color: "neon-green" as const,
-    image: "/images/project-dhopa.png",
-    github: "#",
-    live: "#",
   },
 ]
 
@@ -76,7 +160,7 @@ const staggerItem = {
 function SystemCard({
   system,
 }: {
-  system: (typeof systems)[0]
+  system: (typeof projects)[0]
 }) {
   const { emitSignal } = useSignal()
   const isBlue = system.color === "neon-blue"
@@ -89,7 +173,7 @@ function SystemCard({
     <motion.div
       variants={staggerItem}
       onMouseEnter={handleMouseEnter}
-      className="group relative glass-card rounded-xl overflow-hidden glow-border-hover project-card"
+      className="group relative rounded-2xl overflow-hidden border border-white/10 bg-card/40 backdrop-blur-md project-card"
     >
       {/* Image area with overlay or Blueprint */}
       <div className="relative h-56 overflow-hidden">
@@ -117,24 +201,45 @@ function SystemCard({
             : "bg-gradient-to-t from-neon-green/10 via-transparent to-transparent"
             }`}
         />
-        {/* Scan line on hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        {/* Subtle grain sheen */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.03) 2px, rgba(0,229,255,0.03) 4px)",
+            background:
+              "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 45%), radial-gradient(circle at 80% 60%, rgba(255,255,255,0.04), transparent 50%)",
           }}
         />
       </div>
 
       {/* Content area */}
       <div className="p-6">
-        {/* Title row with action icons */}
-        <div className="flex items-start justify-between mb-3">
-          <h3
-            className={`text-lg lg:text-xl font-bold transition-colors duration-300 ${isBlue ? "text-neon-blue" : "text-neon-green"
+        {/* Badge row */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="text-[11px] font-mono tracking-[0.22em] uppercase text-muted-foreground">
+            {system.year}
+          </span>
+          <span className="w-1 h-1 rounded-full bg-border" aria-hidden="true" />
+          <span
+            className={`text-[11px] font-mono tracking-[0.22em] uppercase px-2 py-0.5 rounded-full border ${isBlue
+              ? "border-neon-blue/25 text-neon-blue/80 bg-neon-blue/10"
+              : "border-neon-green/25 text-neon-green/80 bg-neon-green/10"
               }`}
           >
-            <DecryptEffect>{system.title}</DecryptEffect>
-          </h3>
+            {system.status}
+          </span>
+        </div>
+
+        {/* Title row with action icons */}
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <h3
+              className={`text-xl lg:text-2xl font-bold transition-colors duration-300 ${isBlue ? "text-neon-blue" : "text-neon-green"
+                }`}
+            >
+              <DecryptEffect>{system.title}</DecryptEffect>
+            </h3>
+            <p className="text-sm text-foreground/85 mt-1">{system.tagline}</p>
+          </div>
           <div className="flex items-center gap-2 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
             {system.github && (
               <a
@@ -166,8 +271,27 @@ function SystemCard({
           {system.problem}
         </p>
 
+        {/* Details (expand) */}
+        <details className="group/details">
+          <summary className="list-none cursor-pointer select-none inline-flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-muted-foreground hover:text-foreground transition">
+            <Sparkles className="w-3.5 h-3.5" />
+            View build details
+            <span className="ml-1 text-foreground/60 group-open/details:rotate-90 transition">›</span>
+          </summary>
+          <ul className="mt-3 space-y-2 text-sm text-foreground/85">
+            {system.details.map((d) => (
+              <li key={d} className="flex gap-3 leading-relaxed">
+                <span
+                  className={`mt-2 w-1.5 h-1.5 rounded-full ${isBlue ? "bg-neon-blue/70" : "bg-neon-green/70"}`}
+                />
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+
         {/* Tech tags */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mt-5">
           {system.tech.map((t) => (
             <span
               key={t}
@@ -268,20 +392,20 @@ export function SystemsSection() {
           className="mb-16"
         >
           <span className="text-xs font-mono text-neon-blue tracking-widest uppercase mb-3 block">
-            {"// Real-World Systems"}
+            {"// Projects"}
           </span>
           <h2
             className={`text-3xl lg:text-4xl font-bold text-foreground text-balance transition-all duration-1000 ${isHeadingInView ? "heading-glow" : ""
               }`}
           >
-            <DecryptEffect>Featured Systems</DecryptEffect>
+            <DecryptEffect>Selected Work</DecryptEffect>
           </h2>
           <p className="text-muted-foreground mt-3 max-w-xl leading-relaxed">
-            Not just projects. Production systems designed with security, scalability, and real-world constraints in mind.
+            Modern systems, applied research, and full-stack products — built with real constraints, measurable outcomes, and careful engineering.
           </p>
         </motion.div>
 
-        {/* Systems grid with staggered reveal */}
+        {/* Projects grid with staggered reveal */}
         <motion.div
           ref={ref}
           variants={staggerContainer}
@@ -290,7 +414,7 @@ export function SystemsSection() {
           viewport={{ once: true, margin: "-10px" }}
           className="grid md:grid-cols-2 gap-6 mb-24 lg:mb-32"
         >
-          {systems.map((system) => (
+          {projects.map((system) => (
             <SystemCard key={system.title} system={system} />
           ))}
         </motion.div>

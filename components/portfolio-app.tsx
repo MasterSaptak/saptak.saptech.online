@@ -6,6 +6,7 @@ import { useRef } from "react"
 import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { DesignPhilosophy } from "@/components/design-philosophy"
+import { EcosystemSection } from "@/components/ecosystem-section"
 import { SystemsSection } from "@/components/systems-section"
 import { RoboticsSection } from "@/components/robotics-section"
 import { TimelineSection } from "@/components/timeline-section"
@@ -15,6 +16,7 @@ import { Footer } from "@/components/footer"
 import { SystemsAssistant } from "@/components/systems-assistant"
 import { SkillsSection } from "@/components/skills-section"
 import { EntrepreneurshipSection } from "@/components/entrepreneurship-section"
+import { LeadershipSection } from "@/components/leadership-section"
 import { GameDevSection } from "@/components/game-dev-section"
 import { ModeProvider, useMode } from "@/components/mode-context"
 import { SignalProvider } from "@/components/signal-context"
@@ -81,6 +83,9 @@ function PortfolioContent() {
       >
         <HeroSection />
 
+        <SectionDivider color="neon-green" />
+        <EcosystemSection />
+
         {/* Design Philosophy & Skills - always visible below Hero */}
         <SectionDivider color="neon-blue" />
         <DesignPhilosophy />
@@ -98,6 +103,8 @@ function PortfolioContent() {
             >
               <SectionDivider color="neon-blue" />
               <EntrepreneurshipSection />
+              <SectionDivider color="neon-green" />
+              <LeadershipSection />
               <SectionDivider color="neon-green" />
               <SystemsSection />
               <SectionDivider color="neon-blue" />

@@ -7,6 +7,8 @@ import { useMode } from "./mode-context"
 
 const founderLinks = [
   { label: "Ventures", href: "#entrepreneurship" },
+  { label: "Ecosystem", href: "#ecosystem" },
+  { label: "Leadership", href: "#leadership" },
   { label: "Systems", href: "#systems" },
   { label: "Security", href: "#security" },
   { label: "Robotics", href: "#robotics" },
