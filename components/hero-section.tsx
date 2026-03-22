@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import { ParticleField } from "./particle-field"
-import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin } from "lucide-react"
+import { Shield, Bot, Terminal, FileCode, Download, Github, Linkedin, Globe } from "lucide-react"
 import Image from "next/image"
 import { useSignal } from "./signal-context"
 import { PorfAiWidget } from "./porfai-widget"
@@ -307,9 +307,9 @@ export function HeroSection() {
         </span>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:py-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-32 md:pt-40 md:pb-32">
         {/* Main hero layout: text left, photo right */}
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-16">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-16">
           {/* Left: Text content */}
           <div className="flex-1 text-center lg:text-left">
             {/* Status badge */}
@@ -317,7 +317,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-neon-blue/20 bg-neon-blue/5 mb-8"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-neon-blue/20 bg-neon-blue/5 mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-neon-green pulse-glow" />
               <span className="text-xs font-mono text-neon-blue tracking-wider uppercase">
@@ -340,7 +340,7 @@ export function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="text-lg sm:text-xl lg:text-2xl font-mono mb-6 h-8"
+              className="text-lg sm:text-xl lg:text-2xl font-mono mb-4 h-8"
             >
               <TypewriterText />
             </motion.div>
@@ -350,7 +350,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="text-muted-foreground text-base lg:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed"
+              className="text-muted-foreground text-sm lg:text-base max-w-2xl mx-auto lg:mx-0 mb-6 leading-relaxed"
             >
               Building real-world intelligent systems integrating sensors, embedded microcontrollers, cloud services, and machine learning models for healthcare, sustainability, and community safety.
             </motion.p>
@@ -363,10 +363,21 @@ export function HeroSection() {
               className="flex flex-wrap gap-3 justify-center lg:justify-start mb-4"
             >
               <a
+                href="/terminal"
+                className="group relative flex items-center gap-2 px-6 py-2.5 rounded-lg bg-neon-green/10 border border-neon-green/30 text-sm font-mono text-neon-green overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(57,255,20,0.2)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <Terminal className="w-4 h-4" />
+                <span>ACCESS_TERMINAL</span>
+              </a>
+
+              <div className="w-full sm:w-auto h-px sm:h-8 bg-white/5 mx-0 sm:mx-2 hidden sm:block" />
+
+              <a
                 href="https://www.overleaf.com/read/xywdctrjzkwd#3cdf1a"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="lab-button inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-neon-blue/30 bg-neon-blue/10 text-sm font-mono text-neon-blue"
+                className="lab-button inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
               >
                 <Download className="w-4 h-4" />
                 Download CV
@@ -375,19 +386,17 @@ export function HeroSection() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="lab-button inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-secondary/40 text-sm font-mono text-foreground hover:text-neon-blue hover:border-neon-blue/30"
+                className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
               >
                 <Github className="w-4 h-4" />
-                GitHub
               </a>
               <a
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="lab-button inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-secondary/40 text-sm font-mono text-foreground hover:text-neon-blue hover:border-neon-blue/30"
+                className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
               >
                 <Linkedin className="w-4 h-4" />
-                LinkedIn
               </a>
             </motion.div>
           </div>
@@ -400,7 +409,7 @@ export function HeroSection() {
         </div>
 
         {/* Stats with staggered reveal */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto lg:mx-0 mt-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto lg:mx-0 mt-8">
           {stats.map((stat, i) => (
             <AnimatedCounter key={stat.label} {...stat} delay={0.7 + i * 0.12} />
           ))}

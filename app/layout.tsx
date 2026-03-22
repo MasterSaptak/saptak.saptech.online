@@ -9,15 +9,22 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   metadataBase: new URL('https://saptak.saptech.online'),
   title: {
-    default: 'Saptak Roy Akash | Fullstack Developer, Cyber Security & IoT Specialist',
-    template: '%s | Saptak Roy Akash',
+    default: 'Saptak Roy Akash | Saptech | Fullstack Developer & Cyber Security Specialist',
+    template: '%s | Saptak Roy Akash | Saptech',
   },
   description:
-    'Saptak Roy Akash — Fullstack Developer, Cyber Security & IoT Specialist, and Startup Founder building secure, scalable systems.',
+    'Saptak Roy Akash (Saptech) — Fullstack Developer, Cyber Security Researcher, and Startup Founder building secure, scalable intelligent systems. Explore Saptak Roy\'s portfolio at saptak.saptech.online.',
   keywords: [
+    'Saptak',
+    'Saptak Roy',
+    'Saptech',
     'Saptak Roy Akash',
+    'Saptak.saptech.online',
+    'Saptak Portfolio',
+    'Saptak Roy Developer',
+    'Saptak Roy Cyber Security',
     'fullstack developer',
-    'cyber security',
+    'cyber security researcher',
     'IoT specialist',
     'robotics engineer',
     'AI engineer',
@@ -28,7 +35,6 @@ export const metadata: Metadata = {
     'React developer',
     'Next.js developer',
     'portfolio',
-    'saptech',
   ],
   authors: [{ name: 'Saptak Roy Akash', url: 'https://saptak.saptech.online' }],
   creator: 'Saptak Roy Akash',
@@ -48,19 +54,19 @@ export const metadata: Metadata = {
     canonical: 'https://saptak.saptech.online',
   },
   openGraph: {
-    title: 'Saptak Roy Akash | Fullstack Developer, Cyber Security & IoT Specialist',
+    title: 'Saptak Roy Akash | Saptech | Fullstack Developer & Cyber Security',
     description:
-      'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, AI Engineer, and Startup Founder. Building secure, scalable systems and businesses.',
+      'Explore the portfolio of Saptak Roy Akash (Saptech). Specialized in Fullstack Development, Cyber Security, IoT, and Robotics. Building the next generation of secure systems.',
     url: 'https://saptak.saptech.online',
-    siteName: 'Saptak Roy Akash — Portfolio',
+    siteName: 'Saptak Roy Akash — Saptech Portfolio',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Saptak Roy Akash | Fullstack Developer & Cyber Security',
+    title: 'Saptak Roy Akash | Saptech | Fullstack Developer & Cyber Security',
     description:
-      'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, and Startup Founder.',
+      'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, and Startup Founder. Saptak Roy Akash - Saptech.',
   },
   icons: {
     icon: [
@@ -91,10 +97,15 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Saptak Roy Akash',
+  alternateName: ['Saptak', 'Saptech', 'Saptak Roy'],
   url: 'https://saptak.saptech.online',
+  description: 'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, and Startup Founder.',
   jobTitle: 'Fullstack Developer & Cyber Security Specialist',
-  description:
-    'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, AI Engineer, and Startup Founder.',
+  brand: {
+    '@type': 'Brand',
+    name: 'Saptech',
+  },
+  alumniOf: 'Heritage Institute of Technology',
   knowsAbout: [
     'Full-Stack Development',
     'Cyber Security',
@@ -109,8 +120,8 @@ const jsonLd = {
     'Python',
   ],
   sameAs: [
-    'https://github.com/saptak',
-    'https://linkedin.com/in/saptak',
+    'https://github.com/saptakroyakash',
+    'https://linkedin.com/in/saptakroyakash',
   ],
 }
 

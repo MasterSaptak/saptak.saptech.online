@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react"
 
-export type ViewMode = "founder" | "research" | "game-dev"
+export type ViewMode = "founder" | "research" | "developer" | "game-design"
 
 interface ModeContextType {
   mode: ViewMode
