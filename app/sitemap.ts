@@ -1,20 +1,18 @@
-import type { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://saptak.saptech.online'
-
   return [
     {
-      url: baseUrl,
+      url: 'https://saptak.saptech.online',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${baseUrl}/terminal`,
+      url: 'https://saptak.saptech.online/terminal',
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
     },
   ]
 }

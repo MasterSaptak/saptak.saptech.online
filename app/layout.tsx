@@ -93,37 +93,40 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Saptak Roy Akash',
-  alternateName: ['Saptak', 'Saptech', 'Saptak Roy'],
-  url: 'https://saptak.saptech.online',
-  description: 'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, and Startup Founder.',
-  jobTitle: 'Fullstack Developer & Cyber Security Specialist',
-  brand: {
-    '@type': 'Brand',
-    name: 'Saptech',
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Saptak Roy Akash',
+    alternateName: ['Saptak', 'Saptech', 'Saptak Roy'],
+    url: 'https://saptak.saptech.online',
+    description: 'Fullstack Developer, Cyber Security Researcher, IoT & Robotics Engineer, and Startup Founder of Saptech.',
+    jobTitle: 'Fullstack Developer & Cyber Security Specialist',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Saptech',
+    },
+    alumniOf: 'Heritage Institute of Technology',
+    knowsAbout: [
+      'Full-Stack Development', 'Cyber Security', 'IoT', 'Robotics', 'AI', 'Machine Learning', 'Next.js', 'Python'
+    ],
+    sameAs: [
+      'https://github.com/saptakroyakash',
+      'https://linkedin.com/in/saptakroyakash',
+    ],
   },
-  alumniOf: 'Heritage Institute of Technology',
-  knowsAbout: [
-    'Full-Stack Development',
-    'Cyber Security',
-    'IoT',
-    'Robotics',
-    'Artificial Intelligence',
-    'Machine Learning',
-    'Embedded Systems',
-    'React',
-    'Next.js',
-    'Node.js',
-    'Python',
-  ],
-  sameAs: [
-    'https://github.com/saptakroyakash',
-    'https://linkedin.com/in/saptakroyakash',
-  ],
-}
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Saptech',
+    url: 'https://saptak.saptech.online',
+    founder: {
+      '@type': 'Person',
+      name: 'Saptak Roy Akash',
+    },
+    description: 'A technology consultancy and systems engineering hub focused on building high-reliability digital infrastructure.',
+  }
+]
 
 export default function RootLayout({
   children,
