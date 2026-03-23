@@ -325,7 +325,9 @@ export function PorfAiWidget() {
 
   useEffect(() => {
     if (open && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 300)
+      setTimeout(() => {
+        inputRef.current?.focus({ preventScroll: true })
+      }, 300)
     }
   }, [open])
 
@@ -569,7 +571,7 @@ export function PorfAiWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-x-0 bottom-0 z-50 sm:relative sm:inset-auto sm:z-auto w-full sm:w-[340px] rounded-t-2xl sm:rounded-2xl border overflow-hidden max-h-[85vh] sm:max-h-none"
+            className="w-[calc(100vw-48px)] max-w-[340px] sm:w-[340px] rounded-2xl border overflow-hidden"
             style={{
               borderColor: `${moodColor}25`,
               background: "rgba(10, 10, 18, 0.92)",
