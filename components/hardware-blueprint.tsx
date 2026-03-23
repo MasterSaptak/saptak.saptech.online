@@ -75,6 +75,7 @@ export function HardwareBlueprint({ type, className }: BlueprintProps) {
           {/* Data Packets */}
           <motion.circle
             r="2" fill="#00e5ff"
+            initial={{ cx: 70, cy: 110, opacity: 0 }}
             animate={{
               cx: [70, 200, 330],
               cy: [110, 110, 110],

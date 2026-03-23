@@ -307,7 +307,7 @@ export function HeroSection() {
         </span>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-32 md:pt-40 md:pb-32">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-40 pb-32 md:pt-48 md:pb-32">
         {/* Main hero layout: text left, photo right */}
         <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-16">
           {/* Left: Text content */}
@@ -371,6 +371,17 @@ export function HeroSection() {
                 <span>ACCESS_TERMINAL</span>
               </a>
 
+              <a
+                href="https://error-ccx404.saptech.online/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center gap-2 px-6 py-2.5 rounded-lg bg-neon-blue/10 border border-neon-blue/30 text-sm font-mono text-neon-blue overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,229,255,0.2)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <Globe className="w-4 h-4" />
+                <span>COMMUNITY_NET</span>
+              </a>
+
               <div className="w-full sm:w-auto h-px sm:h-8 bg-white/5 mx-0 sm:mx-2 hidden sm:block" />
 
               <a
@@ -382,22 +393,24 @@ export function HeroSection() {
                 <Download className="w-4 h-4" />
                 Download CV
               </a>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
-              >
-                <Github className="w-4 h-4" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
+              <div className="flex gap-2">
+                <a
+                  href="https://github.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lab-button inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-secondary/20 text-sm font-mono text-muted-foreground hover:text-white"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+              </div>
             </motion.div>
           </div>
 

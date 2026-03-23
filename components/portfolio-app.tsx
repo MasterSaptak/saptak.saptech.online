@@ -137,24 +137,35 @@ function PortfolioContent() {
               <SectionDivider color="neon-green" />
               <RoboticsSection />
             </motion.div>
+          ) : mode === "developer" ? (
+            <motion.div
+              key="developer"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SectionDivider color="neon-blue" />
+              <SystemsSection />
+              <SectionDivider color="neon-green" />
+              <SkillsSection />
+              <SectionDivider color="neon-blue" />
+              <RoboticsSection />
+              <SectionDivider color="neon-green" />
+              <TimelineSection />
+            </motion.div>
           ) : (
             <motion.div
-              key="game-dev"
+              id="game-design"
+              key="game-design"
               initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="relative"
             >
-              {/* Game Engine Grid Overlay - specific to this mode */}
+              {/* Game Engine Grid Overlay */}
               <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-              
               <SectionDivider color="neon-blue" />
-              <div className="px-6 py-4 border-l-2 border-purple-500/30 ml-4 mb-8">
-                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-[0.2em]">Engine_Core_Initialized</span>
-                <h2 className="text-2xl font-bold text-foreground mt-1">Technical Game Design</h2>
-              </div>
-
               <GameDevSection />
               <SectionDivider color="neon-green" />
               <SystemsSection />

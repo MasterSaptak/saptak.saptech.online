@@ -85,6 +85,11 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+#ecosystem, #entrepreneurship, #leadership, #timeline, #research, #systems, #skills, #security, #robotics {
+  scroll-margin-top: 100px;
 }
 
 /* Custom scrollbar */
