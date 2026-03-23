@@ -518,7 +518,7 @@ export function PorfAiWidget() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => setOpen(true)}
-            className="group relative flex items-center gap-4 cursor-pointer px-5 py-3 rounded-2xl border"
+            className="group relative flex items-center gap-3 sm:gap-4 cursor-pointer px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border max-w-[280px] sm:max-w-none"
             style={{
               borderColor: `${moodColor}20`,
               background: `rgba(10, 10, 18, 0.7)`,
@@ -569,7 +569,7 @@ export function PorfAiWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-[300px] sm:w-[340px] rounded-2xl border overflow-hidden"
+            className="fixed inset-x-0 bottom-0 z-50 sm:relative sm:inset-auto sm:z-auto w-full sm:w-[340px] rounded-t-2xl sm:rounded-2xl border overflow-hidden max-h-[85vh] sm:max-h-none"
             style={{
               borderColor: `${moodColor}25`,
               background: "rgba(10, 10, 18, 0.92)",
