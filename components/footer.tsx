@@ -42,8 +42,13 @@ export function Footer() {
               {"// Designed and built with systems thinking"}
             </p>
             <p className="text-xs text-muted-foreground">
-              Saptak Roy Akash &middot; Systems Builder &middot; Cyber Security &middot; Robotics
+              <span className="text-white">Saptak Roy Akash</span> &middot; Systems Builder &middot; Cyber Security &middot; Robotics
             </p>
+            <div className="mt-4 pt-4 border-t border-white/5">
+               <a href="https://saptak.saptech.online" className="text-[10px] font-mono text-neon-blue uppercase tracking-[0.2em] hover:text-white transition-all">
+                 Saptak.Saptech.online
+               </a>
+            </div>
           </TechCorners>
 
           <div className="mt-6 flex items-center justify-center gap-6">
