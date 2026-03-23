@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Send, X, MessageSquare, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
 
@@ -44,6 +44,11 @@ function loadMemories(): Record<string, string> {
 
 function saveMemories(memories: Record<string, string>) {
   if (typeof window === "undefined") return
+  // Keep only the 50 most recent entries
+  const entries = Object.entries(memories)
+  if (entries.length > 50) {
+    memories = Object.fromEntries(entries.slice(-50))
+  }
   localStorage.setItem(MEMORY_KEY, JSON.stringify(memories))
 }
 
@@ -72,13 +77,18 @@ function cleanResponse(text: string): string {
 
 function VoiceWaveform({ active, color, compact = false }: { active: "idle" | "listening" | "speaking"; color: string; compact?: boolean }) {
   const bars = compact ? 16 : 24
+  // Memoize random durations so animations don't reset on re-render
+  const randomDurations = useMemo(
+    () => Array.from({ length: bars }, () => Math.random()),
+    [bars]
+  )
   return (
     <div className={`flex items-center justify-center gap-[2px] ${compact ? "h-8" : "h-10"}`}>
       {Array.from({ length: bars }).map((_, i) => {
         const center = Math.abs(i - bars / 2) / (bars / 2)
         const scale = compact ? 0.5 : 1
         const baseHeight = active === "idle" ? (3 + (1 - center) * 6) * scale : (5 + (1 - center) * 16) * scale
-        const animDuration = active === "idle" ? 2 + Math.random() * 2 : 0.3 + Math.random() * 0.5
+        const animDuration = active === "idle" ? 2 + randomDurations[i] * 2 : 0.3 + randomDurations[i] * 0.5
         const delay = i * 0.04
 
         return (
@@ -140,7 +150,11 @@ function CircularPulse({ active, color }: { active: boolean; color: string }) {
   )
 }
 
+let messageIdCounter = 0
+function nextMessageId() { return `msg-${++messageIdCounter}` }
+
 interface ChatMessage {
+  id: string
   role: "user" | "model"
   content: string
   mood?: string
@@ -221,9 +235,28 @@ function speakText(text: string, onStart?: () => void, onEnd?: () => void) {
   utterance.pitch = 1.15
   utterance.volume = 1.0
 
-  utterance.onstart = () => onStart?.()
-  utterance.onend = () => onEnd?.()
-  utterance.onerror = () => onEnd?.()
+  // Chrome workaround: pause/resume to prevent TTS hang after ~15s
+  let keepAlive: ReturnType<typeof setInterval> | null = null
+
+  utterance.onstart = () => {
+    onStart?.()
+    keepAlive = setInterval(() => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause()
+        window.speechSynthesis.resume()
+      } else {
+        if (keepAlive) clearInterval(keepAlive)
+      }
+    }, 10000)
+  }
+  utterance.onend = () => {
+    if (keepAlive) clearInterval(keepAlive)
+    onEnd?.()
+  }
+  utterance.onerror = () => {
+    if (keepAlive) clearInterval(keepAlive)
+    onEnd?.()
+  }
   window.speechSynthesis.speak(utterance)
 }
 
@@ -242,7 +275,9 @@ export function PorfAiWidget() {
   const memoriesRef = useRef<Record<string, string>>({})
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const apiMessagesRef = useRef<{ role: string; content: string }[]>([])
   const recognitionRef = useRef<ReturnType<typeof createRecognition> | null>(null)
+  const voiceRetriesRef = useRef(0)
 
   function createRecognition() {
     const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition ||
@@ -307,10 +342,11 @@ export function PorfAiWidget() {
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return
 
-    const userMsg: ChatMessage = { role: "user", content: text }
+    const userMsg: ChatMessage = { id: nextMessageId(), role: "user", content: text }
     setMessages((prev) => [...prev, userMsg])
-    const newApiMessages = [...apiMessages, { role: "user", content: text }]
+    const newApiMessages = [...apiMessagesRef.current, { role: "user", content: text }]
     setApiMessages(newApiMessages)
+    apiMessagesRef.current = newApiMessages
     setInput("")
     setLoading(true)
 
@@ -329,7 +365,10 @@ export function PorfAiWidget() {
         throw new Error(err.error || `HTTP ${response.status}`)
       }
 
-      const reader = response.body!.getReader()
+      if (!response.body) {
+        throw new Error("Empty response from server")
+      }
+      const reader = response.body.getReader()
       const decoder = new TextDecoder()
       let fullResponse = ""
 
@@ -347,11 +386,18 @@ export function PorfAiWidget() {
           const updated = [...prev]
           const last = updated[updated.length - 1]
           if (last?.role === "model") {
-            updated[updated.length - 1] = { role: "model", content: display, mood }
+            updated[updated.length - 1] = { ...last, content: display, mood }
           } else {
-            updated.push({ role: "model", content: display, mood })
+            updated.push({ id: nextMessageId(), role: "model", content: display, mood })
           }
           return updated
+        })
+        // Auto-scroll during streaming
+        requestAnimationFrame(() => {
+          chatContainerRef.current?.scrollTo({
+            top: chatContainerRef.current.scrollHeight,
+            behavior: "smooth",
+          })
         })
       }
 
@@ -368,11 +414,13 @@ export function PorfAiWidget() {
         const updated = [...prev]
         const last = updated[updated.length - 1]
         if (last?.role === "model") {
-          updated[updated.length - 1] = { role: "model", content: finalDisplay, mood: finalMood }
+          updated[updated.length - 1] = { ...last, content: finalDisplay, mood: finalMood }
         }
         return updated
       })
-      setApiMessages((prev) => [...prev, { role: "model", content: cleaned }])
+      const updatedApiMessages = [...apiMessagesRef.current, { role: "model", content: cleaned }]
+      setApiMessages(updatedApiMessages)
+      apiMessagesRef.current = updatedApiMessages
 
       if (ttsEnabled) {
         speakText(
@@ -390,12 +438,12 @@ export function PorfAiWidget() {
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error"
-      setMessages((prev) => [...prev, { role: "model", content: msg, mood: "sad" }])
+      setMessages((prev) => [...prev, { id: nextMessageId(), role: "model", content: msg, mood: "sad" }])
       setCurrentMood("sad")
     } finally {
       setLoading(false)
     }
-  }, [apiMessages, loading, ttsEnabled, voiceMode])
+  }, [loading, ttsEnabled, voiceMode])
 
   sendMessageRef.current = sendMessage
 
@@ -422,12 +470,18 @@ export function PorfAiWidget() {
     recognition.onerror = () => {
       setListening(false)
       recognitionRef.current = null
+      voiceRetriesRef.current++
+      if (voiceRetriesRef.current > 3) {
+        setVoiceMode(false)
+        voiceRetriesRef.current = 0
+      }
     }
 
     recognition.onend = () => {
       setListening(false)
       recognitionRef.current = null
       if (finalTranscript.trim()) {
+        voiceRetriesRef.current = 0
         setInput("")
         sendMessageRef.current(finalTranscript.trim())
       }
@@ -615,7 +669,7 @@ export function PorfAiWidget() {
 
               {messages.map((msg, i) => (
                 <motion.div
-                  key={i}
+                  key={msg.id}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}

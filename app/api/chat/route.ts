@@ -161,6 +161,12 @@ function checkRateLimit(ip: string): boolean {
   const entry = rateLimit.get(ip)
   if (!entry || now > entry.resetAt) {
     rateLimit.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW })
+    // Periodic cleanup: remove expired entries when map grows large
+    if (rateLimit.size > 1000) {
+      for (const [key, val] of rateLimit) {
+        if (now > val.resetAt) rateLimit.delete(key)
+      }
+    }
     return true
   }
   if (entry.count >= RATE_LIMIT_MAX) return false
@@ -279,7 +285,8 @@ export async function POST(req: Request) {
       async start(controller) {
         const encoder = new TextEncoder()
         const decoder = new TextDecoder()
-        const reader = response.body!.getReader()
+        if (!response.body) throw new Error("Empty response from Groq API")
+        const reader = response.body.getReader()
 
         try {
           let buffer = ""
