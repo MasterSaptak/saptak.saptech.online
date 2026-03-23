@@ -11,9 +11,9 @@ import { PorfAiWidget } from "./porfai-widget"
 const roles = [
   "Full-Stack Developer",
   "AI Engineer",
-  "IoT/Robotics Enthusiast",
-  "Cybersecurity Learner",
-  "Startup Founder",
+  "Founder @ Saptech",
+  "IoT & Robotics Specialist",
+  "Saptak.Saptech.online",
 ]
 
 const stats = [
@@ -313,6 +313,7 @@ export function HeroSection() {
           {/* Left: Text content */}
           <div className="flex-1 text-center lg:text-left">
             {/* Status badge */}
+            <h1 className="sr-only">Saptak.Saptech.online - Official Hub</h1>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
