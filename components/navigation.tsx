@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Terminal as TerminalIcon, Shield, Zap, Cpu, Globe, Activity } from "lucide-react"
+import { Menu, X, Terminal as TerminalIcon, Shield, Zap, Cpu, Globe, Activity, Code, Rocket } from "lucide-react"
 import { useMode, type ViewMode } from "./mode-context"
 
-const founderLinks = [
+const techFounderLinks = [
   { label: "Ventures", href: "/#entrepreneurship" },
   { label: "Ecosystem", href: "/#ecosystem" },
   { label: "Leadership", href: "/#leadership" },
@@ -37,12 +37,22 @@ const gameDesignLinks = [
   { label: "Terminal", href: "/terminal" },
 ]
 
+// Links shown when in Founder View
+const founderViewLinks = [
+  { label: "Initiatives", href: "#initiatives" },
+  { label: "Experience", href: "#experience" },
+  { label: "Methodology", href: "#methodology" },
+  { label: "Collaborate", href: "#collaborate" },
+]
+
 const MODE_STATUS: Record<ViewMode, string> = {
   founder: "INDUSTRIAL_OPERATIONS",
   research: "CYBER_SECURITY_PROTOCOL",
   developer: "FULL_STACK_DEVELOPMENT",
   "game-design": "VIRTUAL_WORLD_ENGINE",
 }
+
+const FOUNDER_VIEW_STATUS = "FOUNDER_MODE_ACTIVE"
 
 function NavPill({ 
   active, 
@@ -90,9 +100,86 @@ function NavPill({
   )
 }
 
+/* ─────────────────────────────────────────────────
+   Master View Switch — Tech vs Founder
+   Premium sliding toggle between the two identities
+   ───────────────────────────────────────────────── */
+function MasterViewSwitch({
+  isFounderView,
+  onToggle,
+}: {
+  isFounderView: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      id="master-view-switch"
+      className="relative flex items-center h-9 w-[180px] rounded-full bg-white/[0.04] border border-white/10 p-1 cursor-pointer overflow-hidden group hover:border-white/20 transition-all duration-500 shadow-[inset_0_1px_3px_rgba(0,0,0,0.4)]"
+      aria-label={`Switch to ${isFounderView ? "Tech" : "Founder"} view`}
+    >
+      {/* Sliding indicator */}
+      <motion.div
+        className="absolute top-1 bottom-1 rounded-full z-0"
+        initial={false}
+        animate={{
+          left: isFounderView ? "calc(50% - 2px)" : "4px",
+          right: isFounderView ? "4px" : "calc(50% - 2px)",
+        }}
+        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        style={{
+          background: isFounderView
+            ? "linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(16,185,129,0.15) 100%)"
+            : "linear-gradient(135deg, rgba(0,229,255,0.2) 0%, rgba(57,255,20,0.1) 100%)",
+          boxShadow: isFounderView
+            ? "0 0 20px rgba(6,182,212,0.15), inset 0 1px 1px rgba(255,255,255,0.1)"
+            : "0 0 20px rgba(0,229,255,0.15), inset 0 1px 1px rgba(255,255,255,0.1)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      />
+
+      {/* Accent glow line */}
+      <motion.div
+        className="absolute top-0 h-[1px] z-10"
+        initial={false}
+        animate={{
+          left: isFounderView ? "55%" : "10%",
+          right: isFounderView ? "10%" : "55%",
+        }}
+        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        style={{
+          background: isFounderView
+            ? "linear-gradient(90deg, transparent, rgba(6,182,212,0.6), transparent)"
+            : "linear-gradient(90deg, transparent, rgba(0,229,255,0.6), transparent)",
+        }}
+      />
+
+      {/* Tech label */}
+      <div
+        className={`relative z-10 flex items-center justify-center gap-1.5 w-1/2 h-full text-[10px] font-mono tracking-[0.12em] uppercase transition-all duration-300 ${
+          !isFounderView ? "text-white" : "text-white/30"
+        }`}
+      >
+        <Code className={`w-3 h-3 transition-all duration-300 ${!isFounderView ? "text-neon-blue drop-shadow-[0_0_6px_rgba(0,229,255,0.5)]" : "text-white/20"}`} />
+        <span>Tech</span>
+      </div>
+
+      {/* Founder label */}
+      <div
+        className={`relative z-10 flex items-center justify-center gap-1.5 w-1/2 h-full text-[10px] font-mono tracking-[0.12em] uppercase transition-all duration-300 ${
+          isFounderView ? "text-white" : "text-white/30"
+        }`}
+      >
+        <Rocket className={`w-3 h-3 transition-all duration-300 ${isFounderView ? "text-[#22d3ee] drop-shadow-[0_0_6px_rgba(6,182,212,0.5)]" : "text-white/20"}`} />
+        <span>Founder</span>
+      </div>
+    </button>
+  )
+}
+
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
-  const { mode, setMode } = useMode()
+  const { mode, setMode, isFounderView, setIsFounderView } = useMode()
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -103,17 +190,16 @@ export function Navigation() {
   }, [])
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("/#")) {
+    if (href.startsWith("/#") || href.startsWith("#")) {
       e.preventDefault();
-      const id = href.replace("/#", "");
+      const id = href.replace("/#", "").replace("#", "");
       setIsOpen(false);
       
-      // Short delay to allow menu animation to start closing
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
           const headerHeight = window.innerWidth < 1024 ? 64 : 80;
-          const offsetPosition = element.offsetTop - headerHeight - 20; // Extra 20px breathing room
+          const offsetPosition = element.offsetTop - headerHeight - 20;
           window.scrollTo({
             top: offsetPosition,
             behavior: "smooth"
@@ -125,11 +211,33 @@ export function Navigation() {
     }
   };
 
-  const navLinks = 
-    mode === "founder" ? founderLinks : 
-    mode === "research" ? researchLinks : 
-    mode === "developer" ? devLinks : 
-    gameDesignLinks;
+  // Handle Founder pill click — toggles Founder View
+  const handleFounderClick = () => {
+    if (isFounderView) {
+      // Already in founder view, switch back to tech view
+      setIsFounderView(false)
+      setMode("developer")
+    } else {
+      // Switch to founder view
+      setIsFounderView(true)
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }
+
+  // Handle tech mode pill clicks — always exits founder view
+  const handleTechModeClick = (newMode: ViewMode) => {
+    if (isFounderView) {
+      setIsFounderView(false)
+    }
+    setMode(newMode)
+  }
+
+  const navLinks = isFounderView
+    ? founderViewLinks
+    : mode === "founder" ? techFounderLinks : 
+      mode === "research" ? researchLinks : 
+      mode === "developer" ? devLinks : 
+      gameDesignLinks;
 
   return (
     <motion.nav
@@ -144,10 +252,15 @@ export function Navigation() {
         {/* Top Status Bar indicator */}
         <div className="h-1 flex bg-white/[0.02] border-b border-white/[0.03]">
           <motion.div 
-            className="h-full bg-neon-blue/40"
+            className="h-full"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 2, ease: "easeInOut" }}
+            style={{
+              background: isFounderView
+                ? "linear-gradient(90deg, transparent, rgba(6,182,212,0.5), rgba(16,185,129,0.3), transparent)"
+                : "rgba(0,229,255,0.4)",
+            }}
           />
         </div>
 
@@ -156,7 +269,7 @@ export function Navigation() {
           
           {/* Brand & Network Unit */}
           <div className="flex items-center gap-4 lg:gap-10 shrink-0 lg:border-r lg:border-white/5 lg:pr-8 lg:h-full">
-            <a href="#hero" className="flex items-center gap-2 lg:gap-4 group">
+            <a href="#hero" className="flex items-center gap-2 lg:gap-4 group" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
               <div className="relative w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center">
                 <div className="absolute inset-0 bg-neon-blue/10 rounded-lg border border-neon-blue/20 rotate-45 group-hover:rotate-90 transition-transform duration-500" />
                 <Activity className="w-4 h-4 lg:w-5 lg:h-5 text-neon-blue" />
@@ -170,14 +283,20 @@ export function Navigation() {
               </div>
             </a>
 
-            {/* Site Toggles (Desktop Only) */}
-            <div className="hidden lg:flex items-center bg-white/[0.03] border border-white/10 rounded-full p-1 shadow-inner">
-              <button className="min-w-[95px] px-4 py-2 text-[10px] font-mono text-white bg-white/5 rounded-full border border-white/5 shadow-sm">
-                PORTFOLIO
-              </button>
-              <a href="https://error-ccx404.saptech.online/" target="_blank" rel="noopener noreferrer" className="min-w-[95px] px-4 py-2 text-[10px] font-mono text-center text-white/40 hover:text-white transition-colors">
-                COMMUNITY
-              </a>
+            {/* ★ Master View Switch — Tech / Founder */}
+            <div className="hidden lg:block">
+              <MasterViewSwitch
+                isFounderView={isFounderView}
+                onToggle={() => {
+                  if (!isFounderView) {
+                    setIsFounderView(true)
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  } else {
+                    setIsFounderView(false)
+                    setMode("developer")
+                  }
+                }}
+              />
             </div>
           </div>
 
@@ -188,29 +307,61 @@ export function Navigation() {
               <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em]">System_State</span>
               <AnimatePresence mode="wait">
                 <motion.span 
-                  key={mode}
+                  key={isFounderView ? "founder-view" : mode}
                   initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 5 }}
-                  className="text-[10px] font-mono text-neon-blue/80 tracking-widest uppercase truncate font-bold"
+                  className={`text-[10px] font-mono tracking-widest uppercase truncate font-bold ${
+                    isFounderView ? "text-[#22d3ee]/80" : "text-neon-blue/80"
+                  }`}
                 >
-                  {MODE_STATUS[mode]}
+                  {isFounderView ? FOUNDER_VIEW_STATUS : MODE_STATUS[mode]}
                 </motion.span>
               </AnimatePresence>
             </div>
 
-            {/* Desktop Mode Switcher */}
-            <div className="flex items-center bg-white/[0.02] border border-white/10 rounded-2xl p-1 shadow-inner shrink-0">
-              <NavPill active={mode === "founder"} onClick={() => setMode("founder")} icon={Globe}>Founder</NavPill>
-              <NavPill active={mode === "research"} onClick={() => setMode("research")} icon={Shield} activeColor="neon-green">Researcher</NavPill>
-              <NavPill active={mode === "developer"} onClick={() => setMode("developer")} icon={Cpu} activeColor="neon-blue">Developer</NavPill>
-              <NavPill active={mode === "game-design"} onClick={() => setMode("game-design")} icon={Zap} activeColor="purple-500">Game Designer</NavPill>
-            </div>
+            {/* Desktop Mode Switcher — only visible in Tech view */}
+            <AnimatePresence mode="wait">
+              {!isFounderView && (
+                <motion.div
+                  key="tech-pills"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center bg-white/[0.02] border border-white/10 rounded-2xl p-1 shadow-inner shrink-0"
+                >
+
+                  <NavPill active={mode === "research"} onClick={() => setMode("research")} icon={Shield} activeColor="neon-green">Researcher</NavPill>
+                  <NavPill active={mode === "developer"} onClick={() => setMode("developer")} icon={Cpu} activeColor="neon-blue">Developer</NavPill>
+                  <NavPill active={mode === "game-design"} onClick={() => setMode("game-design")} icon={Zap} activeColor="purple-500">Game Designer</NavPill>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Founder View Status — only visible in Founder view */}
+            <AnimatePresence mode="wait">
+              {isFounderView && (
+                <motion.div
+                  key="founder-status"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.03] border border-[#06b6d4]/20"
+                >
+                  <div className="w-2 h-2 rounded-full bg-[#22d3ee] animate-pulse" />
+                  <span className="text-[10px] font-mono text-[#22d3ee]/80 tracking-[0.15em] uppercase font-bold">
+                    Founder Mode — Active
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Desktop Links Block */}
             <div className="hidden md:flex items-center gap-1 h-12 px-2 rounded-xl border border-white/5 bg-white/[0.01] min-w-max h-12">
               <AnimatePresence mode="wait">
-                <motion.div key={mode} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-1">
+                <motion.div key={isFounderView ? "fv" : mode} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-1">
                   {navLinks.map((link) => (
-                    <a key={link.label} onMouseEnter={() => setHoveredLink(link.label)} onMouseLeave={() => setHoveredLink(null)} href={link.href} className="relative px-3 py-2 group shrink-0">
+                    <a key={link.label} onMouseEnter={() => setHoveredLink(link.label)} onMouseLeave={() => setHoveredLink(null)} href={link.href} onClick={(e) => handleScroll(e, link.href)} className="relative px-3 py-2 group shrink-0">
                       <span className={`relative z-10 font-mono text-[10px] tracking-tight transition-colors duration-300 ${link.label === "Terminal" ? "text-neon-green flex items-center gap-1.5" : "text-white/40 group-hover:text-white"}`}>
                         {link.label === "Terminal" && <TerminalIcon className="w-3.5 h-3.5" />}
                         {link.label.toUpperCase()}
@@ -243,16 +394,37 @@ export function Navigation() {
             >
               <div className="p-4 space-y-6">
                 
-                {/* Role Switcher in Menu */}
+                {/* Master Switch in Mobile Menu */}
                 <div className="space-y-3">
-                  <span className="text-[8px] font-mono text-white/30 tracking-[0.3em] uppercase px-1">Specialization Focus</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <NavPill active={mode === "founder"} onClick={() => setMode("founder")} icon={Globe}>Founder</NavPill>
-                    <NavPill active={mode === "research"} onClick={() => setMode("research")} icon={Shield} activeColor="neon-green">Researcher</NavPill>
-                    <NavPill active={mode === "developer"} onClick={() => setMode("developer")} icon={Cpu} activeColor="neon-blue">Developer</NavPill>
-                    <NavPill active={mode === "game-design"} onClick={() => setMode("game-design")} icon={Zap} activeColor="purple-500">Game Design</NavPill>
+                  <span className="text-[8px] font-mono text-white/30 tracking-[0.3em] uppercase px-1">Identity Mode</span>
+                  <div className="flex justify-center">
+                    <MasterViewSwitch
+                      isFounderView={isFounderView}
+                      onToggle={() => {
+                        if (!isFounderView) {
+                          setIsFounderView(true)
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        } else {
+                          setIsFounderView(false)
+                          setMode("developer")
+                        }
+                      }}
+                    />
                   </div>
                 </div>
+
+                {/* Role Switcher — only in Tech view */}
+                {!isFounderView && (
+                  <div className="space-y-3">
+                    <span className="text-[8px] font-mono text-white/30 tracking-[0.3em] uppercase px-1">Specialization Focus</span>
+                    <div className="grid grid-cols-2 gap-2">
+
+                      <NavPill active={mode === "research"} onClick={() => setMode("research")} icon={Shield} activeColor="neon-green">Researcher</NavPill>
+                      <NavPill active={mode === "developer"} onClick={() => setMode("developer")} icon={Cpu} activeColor="neon-blue">Developer</NavPill>
+                      <NavPill active={mode === "game-design"} onClick={() => setMode("game-design")} icon={Zap} activeColor="purple-500">Game Design</NavPill>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-3">
                   <span className="text-[8px] font-mono text-white/30 tracking-[0.3em] uppercase px-1">Navigation Hub</span>
@@ -276,7 +448,7 @@ export function Navigation() {
         </AnimatePresence>
       </div>
 
-      {/* REIMAGINED: Mobile Floating Role Dock (Restored & Fixed) */}
+      {/* Mobile Floating Role Dock */}
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -284,26 +456,25 @@ export function Navigation() {
         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 lg:hidden px-4 w-full max-w-[340px]"
       >
         <div className="relative bg-[#0a0a0f]/80 backdrop-blur-2xl border border-white/10 p-1.5 rounded-2xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.8)] flex items-center justify-around overflow-hidden">
-          {/* Neon Accent Glow */}
           <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent pointer-events-none" />
           
-          <button onClick={() => setMode("founder")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${mode === "founder" ? "bg-white/5 text-white" : "text-white/20"}`}>
-            <Globe className={`w-5 h-5 ${mode === "founder" ? "text-neon-blue drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]" : ""}`} />
+          <button onClick={handleFounderClick} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${isFounderView ? "bg-white/5 text-white" : "text-white/20"}`}>
+            <Globe className={`w-5 h-5 ${isFounderView ? "text-neon-blue drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]" : ""}`} />
             <span className="text-[7px] font-mono uppercase tracking-tighter">Founder</span>
           </button>
           
-          <button onClick={() => setMode("research")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${mode === "research" ? "bg-white/5 text-white" : "text-white/20"}`}>
-            <Shield className={`w-5 h-5 ${mode === "research" ? "text-neon-green drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]" : ""}`} />
+          <button onClick={() => handleTechModeClick("research")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${!isFounderView && mode === "research" ? "bg-white/5 text-white" : "text-white/20"}`}>
+            <Shield className={`w-5 h-5 ${!isFounderView && mode === "research" ? "text-neon-green drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]" : ""}`} />
             <span className="text-[7px] font-mono uppercase tracking-tighter">Researcher</span>
           </button>
           
-          <button onClick={() => setMode("developer")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${mode === "developer" ? "bg-white/5 text-white" : "text-white/20"}`}>
-            <Cpu className={`w-5 h-5 ${mode === "developer" ? "text-neon-blue drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]" : ""}`} />
+          <button onClick={() => handleTechModeClick("developer")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${!isFounderView && mode === "developer" ? "bg-white/5 text-white" : "text-white/20"}`}>
+            <Cpu className={`w-5 h-5 ${!isFounderView && mode === "developer" ? "text-neon-blue drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]" : ""}`} />
             <span className="text-[7px] font-mono uppercase tracking-tighter">Developer</span>
           </button>
           
-          <button onClick={() => setMode("game-design")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${mode === "game-design" ? "bg-white/5 text-white" : "text-white/20"}`}>
-            <Zap className={`w-5 h-5 ${mode === "game-design" ? "text-purple-500 drop-shadow-[0_0_8px_rgba(168,85,247,0.4)]" : ""}`} />
+          <button onClick={() => handleTechModeClick("game-design")} className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 ${!isFounderView && mode === "game-design" ? "bg-white/5 text-white" : "text-white/20"}`}>
+            <Zap className={`w-5 h-5 ${!isFounderView && mode === "game-design" ? "text-purple-500 drop-shadow-[0_0_8px_rgba(168,85,247,0.4)]" : ""}`} />
             <span className="text-[7px] font-mono uppercase tracking-tighter">G.Designer</span>
           </button>
         </div>
