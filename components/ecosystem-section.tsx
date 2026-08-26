@@ -11,62 +11,63 @@ type Product = {
   title: string
   subtitle: string
   positioning: string
-  bullets: string[]
+  /** What exists in the repository today. */
+  built: string[]
+  /** Stated direction, not a claim about anything shipped. */
+  next: string[]
   tags: string[]
   accent: "blue" | "green" | "purple"
   icon: React.ElementType
-  status: "Core" | "In Progress" | "Planned"
+  status: "Prototype" | "In Development"
 }
 
 const products: Product[] = [
   {
     key: "iobotanica",
     title: "IOBOTANICA",
-    subtitle: "Smart Agri‑Tech Platform",
-    positioning: "AI + IoT powered intelligent plant ecosystem",
-    bullets: [
-      "Predictive watering intelligence using Weather API + soil trends (e.g., “Next watering in 6 hours”).",
-      "Mobile app dashboard: plant health score, water usage analytics, growth tracking charts.",
-      "Smart alerts: plant stress, optimal growth windows, tank low, sensor anomalies.",
-      "Camera + AI vision: leaf disease detection + growth tracking from images.",
-      "SaaS + hardware combo: sell the kit + subscription for AI insights.",
+    subtitle: "Smart Garden Node",
+    positioning: "Sensing and irrigation on real hardware, with cloud telemetry",
+    built: [
+      "ESP8266 node reading soil moisture, temperature, humidity, and motion on scheduled intervals.",
+      "Relay-driven pump controlled from either the cloud dashboard or a physical button, kept in sync across reconnects.",
+      "On-device 16×2 LCD readout that stays useful when the network does not.",
     ],
-    tags: ["IoT", "Edge Sensors", "Weather API", "Predictive AI", "Mobile Dashboard", "SaaS"],
+    next: ["Vision-based plant health from captured images", "Watering predicted from soil trends rather than thresholds"],
+    tags: ["ESP8266", "Sensors", "Relay Control", "Cloud Telemetry"],
     accent: "green",
     icon: Leaf,
-    status: "Core",
+    status: "Prototype",
   },
   {
     key: "glamora",
     title: "GLAMORA",
     subtitle: "AI Beauty Platform",
-    positioning: "Your personal AI stylist",
-    bullets: [
-      "Live AR hairstyle try‑on (real‑time preview on face via camera).",
-      "AI confidence score (e.g., “This style suits you 92%”).",
-      "Social + viral layer: share previews, “rate my look”, community trends.",
-      "Creator economy: stylists upload styles and earn from bookings.",
-      "Full beauty ecosystem: beard styles, makeup suggestions, skin analysis.",
+    positioning: "Hairstyle recommendation keyed to face structure, plus stylist booking",
+    built: [
+      "Next.js frontend over a style catalogue organised by face structure.",
+      "Booking flow connecting users to stylists for salon or doorstep service.",
+      "A separately deployed booking prototype used to validate the interaction model end to end.",
     ],
-    tags: ["Computer Vision", "AR Try‑On", "Bookings", "Creator Economy", "Social", "Premium UX"],
+    next: ["Facial analysis via OpenCV and MediaPipe", "Geo-based stylist discovery", "FastAPI inference backend"],
+    tags: ["Computer Vision", "OpenCV", "MediaPipe", "Bookings", "Next.js"],
     accent: "purple",
     icon: Sparkles,
-    status: "Core",
+    status: "In Development",
   },
   {
     key: "chocket",
     title: "CHOCKET",
     subtitle: "Commerce Layer",
-    positioning: "Unified checkout + subscriptions for product ecosystems",
-    bullets: [
-      "One commerce foundation for hardware kits, subscriptions, and premium services.",
-      "Shared user identity, billing, invoices, and entitlement management.",
-      "Designed to plug into all products under one dashboard.",
+    positioning: "Cross-border marketplace with multi-currency checkout",
+    built: [
+      "Next.js storefront for imported brands, with multi-currency pricing in the checkout.",
+      "Gifting treated as a first-class order type rather than a checkout add-on.",
     ],
-    tags: ["E‑commerce", "Subscriptions", "Billing", "Entitlements"],
+    next: ["Shared billing and entitlements across the other products"],
+    tags: ["E‑commerce", "Multi‑currency", "Checkout", "Next.js"],
     accent: "blue",
     icon: ShoppingBag,
-    status: "Planned",
+    status: "In Development",
   },
 ]
 
@@ -130,13 +131,34 @@ function ProductCard({ p }: { p: Product }) {
           </div>
         </div>
 
-        <div className="mt-5 space-y-2.5">
-          {p.bullets.map((b) => (
-            <div key={b} className="flex gap-3 text-sm text-foreground/85 leading-relaxed">
-              <span className={`mt-2 w-1.5 h-1.5 rounded-full ${accent.glow}/70`} />
-              <span>{b}</span>
-            </div>
-          ))}
+        <div className="mt-5">
+          <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-muted-foreground mb-2.5">
+            Built
+          </div>
+          <div className="space-y-2.5">
+            {p.built.map((b) => (
+              <div key={b} className="flex gap-3 text-sm text-foreground/85 leading-relaxed">
+                <span className={`mt-2 w-1.5 h-1.5 rounded-full shrink-0 ${accent.glow}/70`} />
+                <span>{b}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 pt-4 border-t border-white/5">
+          <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-muted-foreground mb-2.5">
+            Direction — not yet built
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {p.next.map((n) => (
+              <span
+                key={n}
+                className="text-[11px] font-mono px-2 py-1 rounded-md border border-dashed border-border text-muted-foreground"
+              >
+                {n}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
@@ -177,8 +199,9 @@ export function EcosystemSection() {
             Multi‑domain products. One intelligence layer.
           </GlitchText>
           <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
-            Instead of presenting separate “AI project + IoT project”, this frames everything as a single platform strategy:
-            shared identity, shared AI engine, and a cross‑product dashboard that scales into real business models.
+            These are separate builds that share a thesis: sensing, vision, and commerce are the same
+            problem viewed from three angles. Each card separates what exists in the repository today
+            from where the product is headed.
           </p>
         </motion.div>
 
@@ -227,28 +250,15 @@ export function EcosystemSection() {
                   ))}
                 </div>
 
-                <div className="mt-7 rounded-xl border border-border bg-background/40 p-4">
+                <div className="mt-7 rounded-xl border border-dashed border-border bg-background/40 p-4">
                   <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-muted-foreground">
-                    Dashboard preview
+                    Status
                   </div>
-                  <div className="mt-3 grid grid-cols-2 gap-3">
-                    {[
-                      { label: "Plant Health", value: "92%", accent: "bg-neon-green/60" },
-                      { label: "Style Match", value: "0.92", accent: "bg-purple-400/60" },
-                      { label: "Alerts", value: "3", accent: "bg-neon-blue/60" },
-                      { label: "Subs", value: "Active", accent: "bg-amber-300/60" },
-                    ].map((k) => (
-                      <div key={k.label} className="rounded-lg border border-border bg-secondary/20 p-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono text-muted-foreground tracking-wider uppercase">{k.label}</span>
-                          <span className={`w-2 h-2 rounded-full ${k.accent}`} />
-                        </div>
-                        <div className="mt-2 text-lg font-bold text-foreground">
-                          <DecryptEffect>{k.value}</DecryptEffect>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed">
+                    This shared layer is the design intent across the products, not a service that runs
+                    today. Each product currently owns its own identity and data. The individual builds
+                    below are the real, inspectable work.
+                  </p>
                 </div>
 
                 <a

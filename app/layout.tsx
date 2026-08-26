@@ -2,9 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Analytics } from '@vercel/analytics/next'
+import { allProjects } from '@/lib/projects'
 import './globals.css'
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://saptak.saptech.online'),
@@ -111,7 +110,7 @@ const jsonLd = [
       'Full-Stack Development', 'Cyber Security', 'IoT', 'Robotics', 'AI', 'Machine Learning', 'Next.js', 'Python'
     ],
     sameAs: [
-      'https://github.com/saptakroyakash',
+      'https://github.com/MasterSaptak',
       'https://linkedin.com/in/saptakroyakash',
     ],
   },
@@ -125,7 +124,25 @@ const jsonLd = [
       name: 'Saptak Roy Akash',
     },
     description: 'A technology consultancy and systems engineering hub focused on building high-reliability digital infrastructure.',
-  }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Projects by Saptak Roy Akash',
+    itemListElement: allProjects.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'SoftwareSourceCode',
+        name: p.name,
+        description: p.tagline,
+        codeRepository: p.github,
+        url: p.live ?? p.github,
+        programmingLanguage: p.tech,
+        author: { '@type': 'Person', name: 'Saptak Roy Akash' },
+      },
+    })),
+  },
 ]
 
 export default function RootLayout({

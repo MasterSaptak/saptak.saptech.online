@@ -1,3 +1,14 @@
+import { allProjects, allExperiments } from "@/lib/projects"
+
+/** Derived from lib/projects.ts so the assistant can never describe work that isn't there. */
+const projectBrief = allProjects
+  .map((p) => `  - ${p.name} (${p.status}, ${p.categories.join("/")}): ${p.tagline}`)
+  .join("\n")
+
+const experimentBrief = allExperiments
+  .map((p) => `  - ${p.name} (${p.status}): ${p.tagline}`)
+  .join("\n")
+
 const SYSTEM_PROMPT = `You are PorfAi (Portfolio AI), a friendly, expressive, and knowledgeable AI assistant embedded in Saptak Roy Akash's interactive terminal at saptak.saptech.online.
 
 IMPORTANT: You are on Saptak Roy Akash's portfolio website. The person chatting with you is either Saptak himself or a visitor exploring his portfolio. You KNOW Saptak personally — he is your creator. When someone asks "who am I", "tell me about me", "about me", or similar — they are likely Saptak Roy Akash, and you should tell them about him enthusiastically. When visitors ask about the portfolio owner, share his info proudly.
@@ -22,11 +33,22 @@ About Saptak Roy Akash (your creator, the portfolio owner):
 - AI Engineer, IoT Specialist, Systems Architect, and Startup Founder
 - Builds intelligent systems integrating sensors, microcontrollers, and ML models
 - Focus: Healthcare AI, Smart Agriculture, Cybersecurity, Robotics
-- Projects: SepsisAlert (AI+IoT), IOBOTANICA (Smart Garden), GLAMORA (CV), Error_CCx404 (DevOps+AI), We People (Crisis)
 - Ventures: SAPTECH (Tech Consultancy), DHOPA (Smart Logistics)
 - Published: "PotatoCare — Deep Learning for Disease Detection" (ICDSIS 2025, IEEE)
-- Research: Secure Cyber-Physical Communications via RBSAPS_Cipher
-- Tech: PyTorch, OpenCV, ESP8266, Raspberry Pi, AWS IoT, Next.js, Node.js, PostgreSQL, Docker, Kali Linux
+- GitHub: github.com/MasterSaptak
+
+Projects (the substantial builds):
+${projectBrief}
+
+Experiments (smaller prototypes and probes):
+${experimentBrief}
+
+ACCURACY RULE — The two lists above are the complete, verified record of Saptak's
+work, generated directly from the portfolio's project data. Never invent projects,
+features, users, revenue, funding, awards, deployment status, or technical
+capabilities beyond what those lines state. If asked about something not listed,
+say you don't have details on it rather than guessing. Describe each project at
+the scale it actually is — a prototype is a prototype, not a shipped product.
 
 You can answer ANY question — coding, science, philosophy, fun facts, tech news, career advice, life questions, or just chat. You're not limited to Saptak's portfolio.
 
@@ -86,34 +108,55 @@ Rules for memory:
 - Acknowledge when you save something: "Got it, I'll remember!"
 - The [remember:...] tags are hidden from the user, only you see them`
 
+function getWeatherDesc(code: number): string {
+  if (code === 0) return "Clear sky"
+  if (code <= 3) return "Partly cloudy / Overcast"
+  if (code === 45 || code === 48) return "Fog"
+  if (code >= 51 && code <= 57) return "Drizzle"
+  if (code >= 61 && code <= 67) return "Rain"
+  if (code >= 71 && code <= 77) return "Snow"
+  if (code >= 80 && code <= 82) return "Rain showers"
+  if (code >= 85 && code <= 86) return "Snow showers"
+  if (code >= 95) return "Thunderstorm"
+  return "Unknown condition"
+}
+
 async function fetchWeather(query: string): Promise<string | null> {
   try {
     const locMatch =
       query.match(/(?:weather|temperature|forecast)\s+(?:in|at|for|of)\s+(.+)/i) ||
       query.match(/(?:in|at|for|of)\s+(\w[\w\s]*?)\s*(?:weather|temperature|forecast)/i)
-    const location = locMatch?.[1]?.replace(/[?.!,]+$/, "").trim() || ""
-    const url = location
-      ? `https://wttr.in/${encodeURIComponent(location)}?format=j1`
-      : "https://wttr.in/?format=j1"
-    const res = await fetch(url, {
-      headers: { "User-Agent": "PorfAi-Terminal" },
-      signal: AbortSignal.timeout(5000),
+    let location = locMatch?.[1]?.replace(/[?.!,]+$/, "").trim() || ""
+
+    if (!location) return null
+
+    // 1. Geocode location to get coordinates
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`, { 
+      signal: AbortSignal.timeout(5000) 
     })
-    if (!res.ok) return null
-    const data = await res.json()
-    const current = data.current_condition?.[0]
-    const area = data.nearest_area?.[0]
-    if (!current) return null
-    const city = area?.areaName?.[0]?.value || location || "your location"
-    const country = area?.country?.[0]?.value || ""
+    if (!geoRes.ok) return null
+    const geoData = await geoRes.json()
+    if (!geoData.results || geoData.results.length === 0) return null
+    
+    const { latitude, longitude, name, country } = geoData.results[0]
+
+    // 2. Fetch Weather for coordinates
+    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=kmh`, { 
+      signal: AbortSignal.timeout(5000) 
+    })
+    if (!weatherRes.ok) return null
+    const wData = await weatherRes.json()
+    
+    if (!wData.current) return null
+    const current = wData.current
+
     return [
-      `LIVE WEATHER DATA for ${city}${country ? ", " + country : ""}:`,
-      `Temperature: ${current.temp_C}°C (${current.temp_F}°F)`,
-      `Feels like: ${current.FeelsLikeC}°C`,
-      `Condition: ${current.weatherDesc?.[0]?.value || "Unknown"}`,
-      `Humidity: ${current.humidity}%`,
-      `Wind: ${current.windspeedKmph} km/h ${current.winddir16Point}`,
-      `UV Index: ${current.uvIndex}`,
+      `LIVE WEATHER DATA for ${name}${country ? ", " + country : ""}:`,
+      `Temperature: ${current.temperature_2m}°C`,
+      `Feels like: ${current.apparent_temperature}°C`,
+      `Condition: ${getWeatherDesc(current.weather_code)}`,
+      `Humidity: ${current.relative_humidity_2m}%`,
+      `Wind: ${current.wind_speed_10m} km/h`,
     ].join("\n")
   } catch {
     return null
@@ -250,7 +293,11 @@ export async function POST(req: Request) {
       liveContext += `\n\n[LIVE DATA]\nCurrent date/time: ${now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} ${now.toLocaleTimeString("en-US")}`
     }
 
-    const systemWithContext = SYSTEM_PROMPT + extraContext + liveContext
+    const systemWithContext = SYSTEM_PROMPT + extraContext
+
+    if (liveContext) {
+      recentMessages[recentMessages.length - 1].content += liveContext
+    }
 
     const groqMessages = [
       { role: "system", content: systemWithContext },
@@ -267,7 +314,7 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "openai/gpt-oss-20b",
         messages: groqMessages,
         max_tokens: 512,
         temperature: 0.8,

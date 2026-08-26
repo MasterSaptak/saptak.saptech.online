@@ -571,7 +571,7 @@ export function PorfAiWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="w-[calc(100vw-48px)] max-w-[340px] sm:w-[340px] rounded-2xl border overflow-hidden"
+            className="w-[calc(100vw-32px)] max-w-[440px] sm:w-[440px] rounded-2xl border overflow-hidden"
             style={{
               borderColor: `${moodColor}25`,
               background: "rgba(10, 10, 18, 0.92)",
@@ -637,7 +637,7 @@ export function PorfAiWidget() {
             </div>
 
             {/* Chat messages */}
-            <div ref={chatContainerRef} className="h-36 overflow-y-auto px-3 py-2 space-y-2 scrollbar-thin">
+            <div ref={chatContainerRef} className="h-72 sm:h-80 overflow-y-auto px-3 py-2 space-y-3 scrollbar-thin">
               {messages.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center gap-1.5 text-center">
                   <motion.span

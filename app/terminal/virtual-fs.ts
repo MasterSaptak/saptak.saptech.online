@@ -1,3 +1,5 @@
+import { allExperiments, allProjects, type Project } from "@/lib/projects"
+
 interface FSFile {
   type: "file"
   content: string[]
@@ -9,6 +11,33 @@ interface FSDir {
 }
 
 type FSNode = FSFile | FSDir
+
+function readmeFor(p: Project): FSDir {
+  return {
+    type: "dir",
+    children: {
+      "README.md": {
+        type: "file",
+        content: [
+          `# ${p.name}`,
+          `Status: ${p.status} | ${p.kind} | ${p.year}`,
+          `Stack: ${p.tech.join(", ")}`,
+          "",
+          p.tagline,
+          "",
+          p.summary,
+          ...(p.note ? ["", `Note: ${p.note}`] : []),
+          ...(p.github ? ["", `Source: ${p.github}`] : []),
+          ...(p.live ? [`Live:   ${p.live}`] : []),
+        ],
+      },
+    },
+  }
+}
+
+function dirFrom(items: Project[]): Record<string, FSNode> {
+  return Object.fromEntries(items.map((p) => [p.slug, readmeFor(p)]))
+}
 
 const fileSystem: FSDir = {
   type: "dir",
@@ -42,87 +71,11 @@ const fileSystem: FSDir = {
     },
     projects: {
       type: "dir",
-      children: {
-        "sepsis-alert": {
-          type: "dir",
-          children: {
-            "README.md": {
-              type: "file",
-              content: [
-                "# SepsisAlert",
-                "Stack: [AI + IoT]",
-                "",
-                "Early sepsis detection system powered by AWS IoT Core.",
-                "Uses machine learning for real-time patient monitoring",
-                "and predictive alerting in clinical environments.",
-              ],
-            },
-          },
-        },
-        iobotanica: {
-          type: "dir",
-          children: {
-            "README.md": {
-              type: "file",
-              content: [
-                "# IOBOTANICA",
-                "Stack: [IoT]",
-                "",
-                "Smart gardening system running on an isolated power grid.",
-                "Automated irrigation with sensor-driven decision making",
-                "for sustainable urban agriculture.",
-              ],
-            },
-          },
-        },
-        glamora: {
-          type: "dir",
-          children: {
-            "README.md": {
-              type: "file",
-              content: [
-                "# GLAMORA",
-                "Stack: [AI + Computer Vision]",
-                "",
-                "CV-based hairstyle recommendation engine.",
-                "Uses deep learning for facial feature analysis",
-                "and personalized style suggestions.",
-              ],
-            },
-          },
-        },
-        "error-ccx404": {
-          type: "dir",
-          children: {
-            "README.md": {
-              type: "file",
-              content: [
-                "# Error_CCx404",
-                "Stack: [DevOps + AI]",
-                "",
-                "Community developer hub integrated with Gemini AI.",
-                "Collaborative platform for developers to share,",
-                "learn, and build together.",
-              ],
-            },
-          },
-        },
-        "we-people": {
-          type: "dir",
-          children: {
-            "README.md": {
-              type: "file",
-              content: [
-                "# We People",
-                "Stack: [Crisis Response]",
-                "",
-                "Emergency safety network for community crisis response.",
-                "Real-time coordination and communication during emergencies.",
-              ],
-            },
-          },
-        },
-      },
+      children: dirFrom(allProjects),
+    },
+    experiments: {
+      type: "dir",
+      children: dirFrom(allExperiments),
     },
     research: {
       type: "dir",

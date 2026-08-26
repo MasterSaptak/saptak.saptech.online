@@ -7,8 +7,8 @@ import { useMode, type ViewMode } from "./mode-context"
 
 const techFounderLinks = [
   { label: "Ventures", href: "/#entrepreneurship" },
-  { label: "Ecosystem", href: "/#ecosystem" },
-  { label: "Leadership", href: "/#leadership" },
+  { label: "Projects", href: "/#systems" },
+  { label: "Experiments", href: "/#experiments" },
   { label: "Timeline", href: "/#timeline" },
   { label: "Terminal", href: "/terminal" },
 ]
@@ -16,23 +16,23 @@ const techFounderLinks = [
 const researchLinks = [
   { label: "Cyber_Security", href: "/#security" },
   { label: "Threat_Intel", href: "/#research" },
-  { label: "Protocol_Def", href: "/#security" },
+  { label: "Experiments", href: "/#experiments" },
   { label: "Risk_Audit", href: "/#robotics" },
   { label: "Terminal", href: "/terminal" },
 ]
 
 const devLinks = [
-  { label: "Full_Stack", href: "/#systems" },
-  { label: "Cloud_Arch", href: "/#ecosystem" },
-  { label: "API_Design", href: "/#systems" },
-  { label: "Dev_Ops", href: "/#systems" },
+  { label: "Projects", href: "/#systems" },
+  { label: "Experiments", href: "/#experiments" },
+  { label: "Skills", href: "/#skills" },
+  { label: "Robotics", href: "/#robotics" },
   { label: "Terminal", href: "/terminal" },
 ]
 
 const gameDesignLinks = [
   { label: "Game_Design", href: "/#game-design" },
-  { label: "Unity_Engine", href: "/#game-dev" },
-  { label: "Physics_Sim", href: "/#game-dev" },
+  { label: "Projects", href: "/#systems" },
+  { label: "Experiments", href: "/#experiments" },
   { label: "VFX_Studio", href: "/#game-dev" },
   { label: "Terminal", href: "/terminal" },
 ]

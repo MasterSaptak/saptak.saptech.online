@@ -8,6 +8,7 @@ import { HeroSection } from "@/components/hero-section"
 import { DesignPhilosophy } from "@/components/design-philosophy"
 import { EcosystemSection } from "@/components/ecosystem-section"
 import { SystemsSection } from "@/components/systems-section"
+import { ExperimentsSection } from "@/components/experiments-section"
 import { RoboticsSection } from "@/components/robotics-section"
 import { TimelineSection } from "@/components/timeline-section"
 import { ResearchSection } from "@/components/research-section"
@@ -127,6 +128,8 @@ function PortfolioContent() {
                   <LeadershipSection />
                   <SectionDivider color="neon-green" />
                   <SystemsSection />
+                  <SectionDivider color="neon-green" />
+                  <ExperimentsSection />
                   <SectionDivider color="neon-blue" />
                   <GameDevSection />
                   <SectionDivider color="neon-green" />
@@ -152,6 +155,8 @@ function PortfolioContent() {
                   <CurrentResearchFocus />
                   <SectionDivider color="neon-green" />
                   <SystemsSection />
+                  <SectionDivider color="neon-green" />
+                  <ExperimentsSection />
                   <SectionDivider color="neon-blue" />
                   <GameDevSection />
                   <SectionDivider color="neon-green" />
@@ -167,6 +172,8 @@ function PortfolioContent() {
                 >
                   <SectionDivider color="neon-blue" />
                   <SystemsSection />
+                  <SectionDivider color="neon-green" />
+                  <ExperimentsSection />
                   <SectionDivider color="neon-green" />
                   <SkillsSection />
                   <SectionDivider color="neon-blue" />
@@ -189,6 +196,8 @@ function PortfolioContent() {
                   <GameDevSection />
                   <SectionDivider color="neon-green" />
                   <SystemsSection />
+                  <SectionDivider color="neon-green" />
+                  <ExperimentsSection />
                   <SectionDivider color="neon-blue" />
                   <RoboticsSection />
                   <SectionDivider color="neon-green" />
@@ -221,7 +230,7 @@ function PortfolioContent() {
                 className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_70%_30%,rgba(57,255,20,0.03)_0%,transparent_50%)]"
               />
             )}
-            {mode === "game-dev" && (
+            {mode === "game-design" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -232,7 +241,7 @@ function PortfolioContent() {
           </AnimatePresence>
 
           <AnimatePresence>
-            {mode === "game-dev" && (
+            {mode === "game-design" && (
               <motion.div
                 initial={{ opacity: 0, scale: 1.2 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -258,7 +267,7 @@ function PortfolioContent() {
             style={{
               background: mode === "research"
                 ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(57,255,20,0.08) 2px, rgba(57,255,20,0.08) 4px)"
-                : mode === "game-dev"
+                : mode === "game-design"
                 ? "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168,85,247,0.1) 2px, rgba(168,85,247,0.1) 4px)"
                 : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.08) 2px, rgba(0,229,255,0.08) 4px)",
             }}

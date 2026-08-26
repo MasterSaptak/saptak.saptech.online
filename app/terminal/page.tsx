@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react"
 import { themes, type TerminalTheme } from "./themes"
 import { VirtualFS } from "./virtual-fs"
 import { SAPTAK_BANNER, getNeofetchOutput, cowsay, HACK_LINES } from "./ascii-art"
+import { allProjects, allExperiments } from "@/lib/projects"
 
 interface HistoryEntry {
   command: string
@@ -190,7 +191,7 @@ const executeJS = (code: string): { output: string[]; error: boolean } => {
 }
 
 const ALL_COMMANDS = [
-  "help", "whoami", "skills", "projects", "ventures", "research",
+  "help", "whoami", "skills", "projects", "experiments", "ventures", "research",
   "current", "security", "fetch-cv", "contact", "clear",
   "ls", "cd", "cat", "pwd", "tree",
   "js", "run",
@@ -220,15 +221,23 @@ const STATIC_COMMANDS: Record<string, string[]> = {
     "  [TOOLS]      Docker | Git | Kali Linux | Android Studio",
   ],
   projects: [
-    "Featured Systems:",
+    "Projects:",
     "",
-    "  01. SepsisAlert  [AI + IoT] Early detection with AWS IoT Core",
-    "  02. IOBOTANICA   [IoT] Smart gardening on isolated power grid",
-    "  03. GLAMORA      [AI] CV-based hairstyle recommendation",
-    "  04. Error_CCx404 [DevOps] Community hub with Gemini AI",
-    "  05. We People    [Crisis] Emergency safety network",
+    ...allProjects.map(
+      (p, i) =>
+        `  ${String(i + 1).padStart(2, "0")}. ${p.name.padEnd(16)} [${p.status}] ${p.tagline}`,
+    ),
     "",
-    '  Tip: "cd projects && ls" to explore the filesystem',
+    '  Tip: "experiments" for the smaller prototypes,',
+    '       "cd projects && ls" to explore the filesystem',
+  ],
+  experiments: [
+    "Experiments:",
+    "",
+    ...allExperiments.map(
+      (p, i) =>
+        `  ${String(i + 1).padStart(2, "0")}. ${p.name.padEnd(16)} [${p.status}] ${p.tagline}`,
+    ),
   ],
   ventures: [
     "Venture Portfolio:",
@@ -592,6 +601,7 @@ export default function TerminalPage() {
                 "  whoami        About me",
                 "  skills        Technical matrix",
                 "  projects      Systems built",
+                "  experiments   Prototypes & probes",
                 "  ventures      Venture portfolio",
                 "  research      Publications",
                 "  current       Active exploration",

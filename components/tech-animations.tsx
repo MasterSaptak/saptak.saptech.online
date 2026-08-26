@@ -226,7 +226,10 @@ export function DecryptEffect({
     iterations?: number;
     speed?: number;
 }) {
-    const [text, setText] = useState("")
+    // Seeded with the real text so it is present in the server-rendered HTML —
+    // the scramble is decoration and must never hide the content from crawlers
+    // or from a reader who never gets the JS.
+    const [text, setText] = useState(children)
     const [isComplete, setIsComplete] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const isInView = useInView(ref, { once: true })
